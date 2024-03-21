@@ -1,0 +1,118 @@
+microservice-chart:
+  namespace: "gps"
+  nameOverride: ""
+  fullnameOverride: ""
+  image:
+    repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
+    tag: "0.0.1"
+    pullPolicy: Always
+  livenessProbe:
+    httpGet:
+      path: /q/health/live
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /q/health/ready
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  deployment:
+    create: true
+  ports:
+    - 8080 #http
+  service:
+    type: ClusterIP
+    ports:
+      - 8080 #http
+  ingress:
+    create: true
+    host: "weuuat.gps.internal.uat.platform.pagopa.it"
+    path: /pagopa-gpd-payments-pull/(.*)
+    servicePort: 8080
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: ""
+  podAnnotations: {}
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+    limits:
+      memory: "512Mi"
+      cpu: "300m"
+  autoscaling:
+    enable: true
+    minReplica: 1
+    maxReplica: 1
+    pollingInterval: 10 # seconds
+    cooldownPeriod: 50 # seconds
+    triggers:
+      - type: cpu
+        metadata:
+          # Required
+          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+          value: "75"
+      - type: memory
+        metadata:
+          # Required
+          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+          value: "70"
+  fileConfig: {}
+  envConfig:
+    APP_NAME: "gpd-payments-pull"
+    APP_ENVIRONMENT: "uat"
+    WEBSITE_SITE_NAME: 'gpd-payments-pull' # required to show cloud role name in application insights
+    APP_LOGGING_LEVEL: 'DEBUG'
+    DEFAULT_LOGGING_LEVEL: 'INFO'
+    OTEL_RESOURCE_ATTRIBUTES: "service.name=pagopa-gpd-payments-pull-otl,deployment.environment=uat"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
+    OTEL_LOGS_EXPORTER: none
+    OTEL_TRACES_SAMPLER: "always_on"
+  envFieldRef:
+  envSecret:
+    # required
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
+    OTEL_EXPORTER_OTLP_HEADERS: 'elastic-otl-secret-token'
+  keyvault:
+    name: "pagopa-u-gps-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node_type
+                operator: In
+                values:
+                  - user
+  canaryDelivery:
+    create: false
+    ingress:
+      create: true
+      canary:
+        type: header
+        headerName: X-Canary
+        headerValue: canary
+        weightPercent: 0
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
+        tag: "0.0.1"
+        pullPolicy: Always
+      envConfig: {}
+      envSecret: {}
