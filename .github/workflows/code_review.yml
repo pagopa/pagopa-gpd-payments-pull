@@ -36,5 +36,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           project_key: ${{env.PROJECT_KEY}}
+          jdk_version: 17
+          maven_version: 3.9.3
           coverage_exclusions: "**/config/*,**/*Mock*,**/models/**,**/entities/*"
           cpd_exclusions: "**/models/**,**/entities/*"

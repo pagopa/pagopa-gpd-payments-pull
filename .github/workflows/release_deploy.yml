@@ -119,6 +119,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name}}
           tag: ${{ needs.release.outputs.version }}
+          build_args: |
+            'QUARKUS_PROFILE=prod'
+            'APP_NAME=pagopa-gpd-payments-pull'
 
   deploy_aks:
     name: Deploy on AKS
