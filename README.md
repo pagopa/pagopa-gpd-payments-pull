@@ -49,6 +49,7 @@ or that for `json` version ```http://localhost:8080/q/openapi?format=json```
 - quarkus-smallrye-health
 - quarkus-smallrye-openapi
 - quarkus-resteasy-reactive-jackson
+- quarkus-hibernate-reactive-panache
 - quarkus-reactive-pg-client
 - reactor-netty
 - lombok (provided)
