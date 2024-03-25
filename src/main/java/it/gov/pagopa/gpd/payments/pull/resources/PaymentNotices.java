@@ -53,6 +53,7 @@ public class PaymentNotices {
                     ref = "#/components/responses/AppException400"),
     })
     @GET
+    @Path("")
     public Uni<Response> getPaymentNotices(
             @QueryParam("dueDate") LocalDate dueDate
     ) {

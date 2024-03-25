@@ -1,0 +1,306 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "GPD Payments Pull Services",
+    "description" : "GPD Payments Pull Services",
+    "termsOfService" : "https://www.pagopa.gov.it/",
+    "version" : "0.0.1"
+  },
+  "servers" : [ {
+    "url" : "${host}/gpd/payments/pull/api/v1 - APIM"
+  } ],
+  "tags" : [ {
+    "name" : "Payment Notices",
+    "description" : "Payment Notices Operations"
+  } ],
+  "paths" : {
+    "/info" : {
+      "get" : {
+        "tags" : [ "Generic" ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppInfo"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/payment-notices" : {
+      "get" : {
+        "tags" : [ "Payment Notices" ],
+        "summary" : "Get Payment Notices",
+        "description" : "Retrieve payment notices from ACA and GPD sources, filtered by a due date",
+        "parameters" : [ {
+          "name" : "dueDate",
+          "in" : "query",
+          "schema" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PaymentNotice"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalServerError"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/AppException400"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AppInfo" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "environment" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorResponse" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string",
+            "example" : "Internal Server Error"
+          },
+          "status" : {
+            "format" : "int32",
+            "type" : "integer",
+            "example" : 500
+          },
+          "detail" : {
+            "type" : "string",
+            "example" : "An unexpected error has occurred. Please contact support."
+          },
+          "instance" : {
+            "type" : "string",
+            "example" : "PN-500"
+          }
+        }
+      },
+      "Installment" : {
+        "type" : "object",
+        "properties" : {
+          "nav" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "paTaxCode" : {
+            "type" : "string"
+          },
+          "paFullName" : {
+            "type" : "string"
+          },
+          "amount" : {
+            "type" : "number"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "isPartialPayment" : {
+            "type" : "boolean"
+          },
+          "dueDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "retentionDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "insertedDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "notificationFee" : {
+            "type" : "number"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "lastUpdatedDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          }
+        }
+      },
+      "LocalDate" : {
+        "format" : "date",
+        "type" : "string",
+        "example" : "2022-03-10"
+      },
+      "PaymentNotice" : {
+        "type" : "object",
+        "properties" : {
+          "iupd" : {
+            "type" : "string"
+          },
+          "debtorTaxCode" : {
+            "type" : "string"
+          },
+          "debtorFullName" : {
+            "type" : "string"
+          },
+          "debtorType" : {
+            "type" : "string"
+          },
+          "prTaxCode" : {
+            "type" : "string"
+          },
+          "paFullName" : {
+            "type" : "string"
+          },
+          "insertedDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "publishDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "validityDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/PaymentNoticeStatus"
+          },
+          "lastUpdateDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "paymentOptions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentOption"
+            }
+          }
+        }
+      },
+      "PaymentNoticeStatus" : {
+        "enum" : [ "VALID", "PARTIALLY_PAID" ],
+        "type" : "string"
+      },
+      "PaymentOption" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "numberOfInstallments" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "dueDate" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          },
+          "switchToExpired" : {
+            "type" : "boolean"
+          },
+          "installments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Installment"
+            }
+          }
+        }
+      }
+    },
+    "responses" : {
+      "AppException400" : {
+        "description" : "Default app exception for status 400",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "examples" : {
+              "Error" : {
+                "value" : {
+                  "type" : "",
+                  "title" : "Bad Request",
+                  "status" : 400,
+                  "detail" : "The provided due date [<due_date>] is invalid",
+                  "instance" : "PPL_703"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AppException404" : {
+        "description" : "Default app exception for status 404",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "example" : {
+              "type" : "",
+              "title" : "Not Found",
+              "status" : 404,
+              "detail" : "Payment Notice [<pn_id>] not found",
+              "instance" : "PPL_900"
+            }
+          }
+        }
+      },
+      "InternalServerError" : {
+        "description" : "Internal Server Error",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "example" : {
+              "type" : "",
+              "title" : "Internal Server Error",
+              "status" : 500,
+              "detail" : "An unexpected error has occurred. Please contact support.",
+              "instance" : "PPL_603"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "ApiKey" : {
+        "type" : "apiKey",
+        "name" : ""
+      }
+    }
+  }
+}

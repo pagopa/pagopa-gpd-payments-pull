@@ -2,6 +2,7 @@ package it.gov.pagopa.gpd.payments.pull;
 
 import io.quarkus.runtime.Startup;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Components;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
@@ -81,6 +82,6 @@ import javax.ws.rs.core.MediaType;
                                      "instance": "PPL_900"
                                    }""")),
             }),
-    info = @Info(title = "GPD Payments Pull Services", version = "0.0.0-SNAPSHOT"))
+    info = @Info(title = "GPD Payments Pull Services", version = "${quarkus.application.version}"))
 @Startup
 public class App extends Application {}

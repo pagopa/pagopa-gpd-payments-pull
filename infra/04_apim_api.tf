@@ -1,6 +1,6 @@
 locals {
   apim_gpd_payments_pull = {
-    // Backoffice External
+    // GPD Payments Pull
     display_name          = "GPD Payments Pull"
     description           = "API for GPD Payments Pull"
     path                  = "gpd/payments/pull"
@@ -34,7 +34,7 @@ module "apim_gpd_payments_pull_api_v1" {
   name                  = format("%s-gpd-payments-pull-api", var.env_short)
   api_management_name   = local.apim.name
   resource_group_name   = local.apim.rg
-  product_ids           = [local.apim.bo_external_product_psp_id]
+  product_ids           = [local.apim.gpd_payments_pull_product_id]
   subscription_required = local.apim_gpd_payments_pull.subscription_required
   version_set_id        = azurerm_api_management_api_version_set.api_gpd_payments_pull_api.id
   api_version           = "v1"
