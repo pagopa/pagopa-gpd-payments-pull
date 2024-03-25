@@ -1,6 +1,6 @@
-package it.gov.pagopa.quarkustemplate.resources;
+package it.gov.pagopa.gpd.payments.pull.resources;
 
-import it.gov.pagopa.quarkustemplate.models.AppInfo;
+import it.gov.pagopa.gpd.payments.pull.models.AppInfo;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
