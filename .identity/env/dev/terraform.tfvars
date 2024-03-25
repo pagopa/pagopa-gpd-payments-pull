@@ -1,10 +1,10 @@
 prefix    = "pagopa"
-env_short = "p"
-
+env       = "dev"
+env_short = "d"
 
 tags = {
   CreatedBy   = "Terraform"
-  Environment = "Prod"
+  Environment = "Dev"
   Owner       = "pagoPA"
   Source      = "https://github.com/pagopa/pagopa-gpd-payments-pull"
   CostCenter  = "TS310 - PAGAMENTI & SERVIZI"
