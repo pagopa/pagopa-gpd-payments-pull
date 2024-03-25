@@ -1,14 +1,14 @@
 locals {
   github = {
     org        = "pagopa"
-    repository = "<your-project-name>" # TODO set the project repository
+    repository = "pagopa-gpd-payments-pull"
   }
   prefix = "pagopa"
   product = "${local.prefix}-${var.env_short}"
   project = "${local.prefix}-${var.env_short}-${local.location_short}-${local.domain}"
   runner = "${local.prefix}-${var.env_short}-${local.location_short}"
 
-  domain = "project-domain" # TODO set the project domain (i.e. namespace)
+  domain = "gps"
   location_short  = "weu"
 
   aks_name                = "${local.product}-${local.location_short}-${var.env}-aks"

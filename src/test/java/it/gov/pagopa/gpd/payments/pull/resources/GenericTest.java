@@ -1,4 +1,4 @@
-package it.gov.pagopa.quarkustemplate.resources;
+package it.gov.pagopa.gpd.payments.pull.resources;
 
 
 import io.quarkus.test.junit.QuarkusTest;

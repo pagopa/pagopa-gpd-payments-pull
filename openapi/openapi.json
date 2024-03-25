@@ -1,0 +1,369 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "GPD Payments Pull Services",
+    "description" : "GPD Payments Pull Services",
+    "termsOfService" : "https://www.pagopa.gov.it/",
+    "version" : "0.0.1"
+  },
+  "servers" : [ {
+    "url" : "${host}/gpd/payments/pull/api/v1 - APIM"
+  } ],
+  "tags" : [ {
+    "name" : "Payment Notices",
+    "description" : "Payment Notices Operations"
+  } ],
+  "paths" : {
+    "/info" : {
+      "get" : {
+        "tags" : [ "Generic" ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppInfo"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/payment-notices" : {
+      "get" : {
+        "tags" : [ "Payment Notices" ],
+        "summary" : "Get Payment Notices",
+        "description" : "Retrieve payment notices from ACA and GPD sources, filtered by a due date",
+        "parameters" : [ {
+          "name" : "dueDate",
+          "in" : "query",
+          "schema" : {
+            "$ref" : "#/components/schemas/LocalDate"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PaymentNotice"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalServerError"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/AppException400"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AppInfo" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "environment" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorResponse" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string",
+            "example" : "Internal Server Error"
+          },
+          "status" : {
+            "format" : "int32",
+            "type" : "integer",
+            "example" : 500
+          },
+          "detail" : {
+            "type" : "string",
+            "example" : "An unexpected error has occurred. Please contact support."
+          },
+          "instance" : {
+            "type" : "string",
+            "example" : "PN-500"
+          }
+        }
+      },
+      "Installment" : {
+        "required" : [ "nav", "iuv", "paTaxCode", "paFullName", "amount", "description", "dueDate", "insertedDate", "status", "lastUpdatedDate" ],
+        "type" : "object",
+        "properties" : {
+          "nav" : {
+            "description" : "Notice Code",
+            "type" : "string"
+          },
+          "iuv" : {
+            "description" : "Unique identifier",
+            "type" : "string"
+          },
+          "paTaxCode" : {
+            "description" : "Tax code of the Creditor Body",
+            "type" : "string"
+          },
+          "paFullName" : {
+            "description" : "Company name of the Creditor Body",
+            "type" : "string"
+          },
+          "amount" : {
+            "description" : "Payment Option Amount",
+            "type" : "number"
+          },
+          "description" : {
+            "description" : "Description of the OP (e.g. \"SISA - 741T, 942T - Checks without authorization or funding\")",
+            "type" : "string"
+          },
+          "isPartialPayment" : {
+            "description" : "Indicates whether the OP is part of an installment plan",
+            "type" : "boolean"
+          },
+          "dueDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Is the date by which (TO) the Payment option is payable."
+            } ]
+          },
+          "retentionDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Not currently used in any logic. The purpose of this date will be to give the possibility to specify a time period after the dueDate within which a payment option, even if expired, will still be payable."
+            } ]
+          },
+          "insertedDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "date of insertion of the OP"
+            } ]
+          },
+          "notificationFee" : {
+            "description" : "corresponds to the SEND notification costs",
+            "type" : "number"
+          },
+          "status" : {
+            "description" : "Status of the OP",
+            "type" : "string"
+          },
+          "lastUpdatedDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "OP update date"
+            } ]
+          }
+        }
+      },
+      "LocalDate" : {
+        "format" : "date",
+        "type" : "string",
+        "example" : "2022-03-10"
+      },
+      "PaymentNotice" : {
+        "required" : [ "iupd", "debtorTaxCode", "debtorFullName", "debtorType", "prTaxCode", "paFullName", "insertedDate", "publishDate", "validityDate", "status", "lastUpdateDate", "paymentOptions" ],
+        "type" : "object",
+        "properties" : {
+          "iupd" : {
+            "description" : "Unique ID of the Debt Position (for positions originating from ACA the IUPD starts with ACA_)",
+            "type" : "string"
+          },
+          "debtorTaxCode" : {
+            "description" : "Tax code of the person to whom the Debt Position is registered",
+            "type" : "string"
+          },
+          "debtorFullName" : {
+            "description" : "Full name of the person to whom the Debt Position is registered",
+            "type" : "string"
+          },
+          "debtorType" : {
+            "description" : "Type of subject to whom the Debt Position is registered (Physical or Legal)",
+            "type" : "string"
+          },
+          "prTaxCode" : {
+            "description" : "Tax code of the Creditor Body",
+            "type" : "string"
+          },
+          "paFullName" : {
+            "description" : "Company name of the Creditor Body",
+            "type" : "string"
+          },
+          "insertedDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Date of entry of the Debt Position"
+            } ]
+          },
+          "publishDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Date of publication of the Debt Position. In the case of Positions created by ACA it corresponds to the insertion date."
+            } ]
+          },
+          "validityDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Start date of validity of the Debt Position. if set to null it goes directly to valid when publishing"
+            } ]
+          },
+          "status" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/PaymentNoticeStatus"
+            }, {
+              "description" : "State of the Debt Position. Will be\nVALID\n or\nPARTIALLY_PAID"
+            } ]
+          },
+          "lastUpdateDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Date of update of the Debt Position"
+            } ]
+          },
+          "paymentOptions" : {
+            "description" : "Array structure containing any payment options (there always exists at least 1)",
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentOption"
+            }
+          }
+        }
+      },
+      "PaymentNoticeStatus" : {
+        "enum" : [ "VALID", "PARTIALLY_PAID" ],
+        "type" : "string"
+      },
+      "PaymentOption" : {
+        "required" : [ "numberOfInstallments", "switchToExpired", "installments" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "description" : "Description of the payment option",
+            "type" : "string"
+          },
+          "numberOfInstallments" : {
+            "format" : "int32",
+            "description" : "Number of installments that make up the payment option, if equal to 1 it is a single payment",
+            "type" : "integer"
+          },
+          "dueDate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LocalDate"
+            }, {
+              "description" : "Is the date by which the Payment option is payable."
+            } ]
+          },
+          "switchToExpired" : {
+            "description" : "Indicates, if set to true, in the case of PD created on GPD, that once the expiration date (dueDate ) has passed the PD is automatically set to the expired status",
+            "type" : "boolean"
+          },
+          "installments" : {
+            "description" : "Array structure containing the installments that make up the payment option (there always exists at least 1)",
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Installment"
+            }
+          }
+        }
+      }
+    },
+    "responses" : {
+      "AppException400" : {
+        "description" : "Default app exception for status 400",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "examples" : {
+              "Error" : {
+                "value" : {
+                  "type" : "",
+                  "title" : "Bad Request",
+                  "status" : 400,
+                  "detail" : "The provided due date [<due_date>] is invalid",
+                  "instance" : "PPL_703"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AppException404" : {
+        "description" : "Default app exception for status 404",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "example" : {
+              "type" : "",
+              "title" : "Not Found",
+              "status" : 404,
+              "detail" : "Payment Notice [<pn_id>] not found",
+              "instance" : "PPL_900"
+            }
+          }
+        }
+      },
+      "InternalServerError" : {
+        "description" : "Internal Server Error",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "example" : {
+              "type" : "",
+              "title" : "Internal Server Error",
+              "status" : 500,
+              "detail" : "An unexpected error has occurred. Please contact support.",
+              "instance" : "PPL_603"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "ApiKey" : {
+        "type" : "apiKey",
+        "name" : ""
+      }
+    }
+  }
+}
