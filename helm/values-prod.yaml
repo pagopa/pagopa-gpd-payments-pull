@@ -1,7 +1,7 @@
 microservice-chart:
   namespace: "gps"
   nameOverride: ""
-  fullnameOverride: ""
+  fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
     tag: "0.0.1"
