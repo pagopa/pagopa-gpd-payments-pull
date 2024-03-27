@@ -249,7 +249,7 @@
             "type" : "string"
           },
           "debtorType" : {
-            "description" : "Type of subject to whom the Debt Position is registered (Physical or Legal)",
+            "description" : "Type of subject to whom the Debt Position is registered (Will be F (Physical) or G(Legal))",
             "type" : "string"
           },
           "paTaxCode" : {
