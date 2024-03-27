@@ -78,11 +78,14 @@ microservice-chart:
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
+    GPD_DB_URL: "vertx-reactive:postgresql://pagopa-p-gpd-postgresql.postgres.database.azure.com:5432/apd?sslmode=require&tcpKeepAlive=true"
   envFieldRef:
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
     OTEL_EXPORTER_OTLP_HEADERS: 'elastic-otl-secret-token'
+    GPD_DB_USERNAME: "db-apd-user-name"
+    GPD_DB_PASSWORD: "db-apd-user-password"
   keyvault:
     name: "pagopa-p-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"

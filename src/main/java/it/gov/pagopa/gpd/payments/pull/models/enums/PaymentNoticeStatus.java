@@ -1,4 +1,4 @@
-package it.gov.pagopa.gpd.payments.pull.models;
+package it.gov.pagopa.gpd.payments.pull.models.enums;
 
 public enum PaymentNoticeStatus {
 
