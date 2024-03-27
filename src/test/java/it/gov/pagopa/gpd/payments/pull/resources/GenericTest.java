@@ -19,4 +19,13 @@ class GenericTest {
                 .statusCode(200)
                 .contentType(MediaType.APPLICATION_JSON);
     }
+
+    @Test
+    public void home(){
+        given()
+                .when().get("")
+                .then()
+                .statusCode(200);
+    }
+
 }

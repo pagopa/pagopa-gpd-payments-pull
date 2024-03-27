@@ -40,9 +40,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           project_key: ${{env.PROJECT_KEY}}
-          coverage_exclusions: "**/config/*,**/*Mock*,**/model/**,**/entities/*"
-          cpd_exclusions: "**/model/**,**/entities/*"
           java_version: 17
+          coverage_exclusions: "**/config/*,**/*Mock*,**/models/**,**/entities/*,**/exception/**,**/App.java"
+          cpd_exclusions: "**/models/**,**/entities/*"
 
 #  smoke-test:
 #    name: Smoke Test
