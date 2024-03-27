@@ -11,25 +11,26 @@ import java.util.List;
 @ApplicationScoped
 public class PaymentPositionRepository implements PanacheRepository<PaymentPosition> {
 
-    private final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
+    private static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 AND ppos.status IN ('VALID', 'PARTIALLY_PAID')";
 
-     /**
+    /**
      * Recovers a reactive stream of payment positions, using the debtor taxCode, and optionally the dueDate for which at least one
      * Payment Option must be valid. Uses limit and page to limit result size
+     *
      * @param taxCode debtor tax code to use for notices search. mandatory
      * @param dueDate optional parameter to filter notices based on valid dueDate
-     * @param limit page limit
-     * @param page page number
+     * @param limit   page limit
+     * @param page    page number
      * @return
      */
     public Uni<List<PaymentPosition>> findPaymentPositionsByTaxCodeAndDueDate(
             String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         return (dueDate == null ?
-                 find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode) :
+                find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode) :
                 find(GET_VALID_POSITIONS_BY_TAXCODE_BASE.concat(" AND " +
-                "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
-                        taxCode, dueDate.atTime(23,59, 59, 999)))
+                                "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
+                        taxCode, dueDate.atTime(23, 59, 59, 999)))
                 .page(page, limit).list();
     }
 

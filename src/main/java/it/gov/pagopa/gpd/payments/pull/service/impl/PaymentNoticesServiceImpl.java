@@ -1,6 +1,7 @@
 package it.gov.pagopa.gpd.payments.pull.service.impl;
 
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.unchecked.Unchecked;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.mapper.PaymentNoticeMapper;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
@@ -22,15 +23,15 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     @Override
     public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         return paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
-                .onFailure().invoke(throwable -> {
+                .onFailure().invoke(Unchecked.consumer(throwable -> {
                     throw new PaymentNoticeException(AppErrorCodeEnum.PPL_700,
                             String.format("Exception thrown during data recovery: %s", throwable));
-                })
+                }))
                 .onItem().transform(item -> item.stream().map(PaymentNoticeMapper::manNotice)
-                        .toList()).onFailure().invoke(throwable -> {
-                            throw new PaymentNoticeException(AppErrorCodeEnum.PPL_800,
-                        String.format("Exception thrown during data recovery: %s", throwable));
-        });
+                        .toList()).onFailure().invoke(Unchecked.consumer(throwable -> {
+                    throw new PaymentNoticeException(AppErrorCodeEnum.PPL_800,
+                            String.format("Exception thrown during data recovery: %s", throwable));
+                }));
     }
 
 }

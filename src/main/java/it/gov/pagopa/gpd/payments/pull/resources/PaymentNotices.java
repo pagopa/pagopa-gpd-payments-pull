@@ -1,6 +1,8 @@
 package it.gov.pagopa.gpd.payments.pull.resources;
 
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.unchecked.Unchecked;
+import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
 import it.gov.pagopa.gpd.payments.pull.exception.InvalidTaxCodeHeaderException;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
@@ -15,8 +17,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -42,10 +42,9 @@ public class PaymentNotices {
     private static final String REPLACEMENT = "_";
     private static final int FISCAL_CODE_LENGTH = 16;
 
-    private final Logger logger = LoggerFactory.getLogger(PaymentNotices.class);
 
     @Inject
-    private PaymentNoticesService paymentNoticeService;
+    PaymentNoticesService paymentNoticeService;
 
     /**
      * Recovers a reactive stream of payment notices, using the debtor taxCode, and optionally the dueDate for which at least one
@@ -91,13 +90,14 @@ public class PaymentNotices {
         taxCode = taxCode.replaceAll(REGEX, REPLACEMENT);
 
         Uni<List<PaymentNotice>> paymentNoticesUni = paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
-        return paymentNoticesUni.onFailure().invoke(error -> {
-            if(error instanceof PaymentNoticeException)
-                throw new PaymentNoticeException(((PaymentNoticeException) error)
-                        .getErrorCode(), error.getMessage(), error.getCause());
-            else
-                throw new RuntimeException(error);
-        }).onItem().transform(item -> Response.ok().entity(item).build());
+        return paymentNoticesUni.onFailure().invoke(Unchecked.consumer(error -> {
+                    if(error instanceof PaymentNoticeException ex)
+                        throw new PaymentNoticeException(ex.getErrorCode(), ex.getMessage(), ex.getCause());
+                    else
+                        throw new AppErrorException(error);
+                }))
+                .onItem()
+                .transform(item -> Response.ok().entity(item).build());
     }
 
 

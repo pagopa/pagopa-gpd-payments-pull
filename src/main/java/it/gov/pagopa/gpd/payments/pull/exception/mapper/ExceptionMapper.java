@@ -34,12 +34,11 @@ public class ExceptionMapper {
         logger.error(exception.getMessage(), exception);
         Exception composedException;
         List<Throwable> causes = exception.getCauses();
-        composedException = (Exception) causes.get(causes.size()-1);
+        composedException = (Exception) causes.get(causes.size() - 1);
 
-        if (composedException instanceof NotFoundException) {
-            return mapNotFoundException((NotFoundException) composedException);
-        }
-        else if (composedException instanceof PaymentNoticeException paymentNoticeException) {
+        if(composedException instanceof NotFoundException ex) {
+            return mapNotFoundException(ex);
+        } else if(composedException instanceof PaymentNoticeException paymentNoticeException) {
             return mapPaymentNoticeException(paymentNoticeException);
         } else {
             return mapGenericException(exception);
@@ -67,11 +66,10 @@ public class ExceptionMapper {
     public Response mapGenericException(Exception exception) {
         logger.error(exception.getMessage(), exception);
         return Response.status(INTERNAL_SERVER_ERROR)
-                .entity(
-                        buildErrorResponse(
-                                Response.Status.INTERNAL_SERVER_ERROR,
-                                AppErrorCodeEnum.PPL_900,
-                                "Unexpected Error"))
+                .entity(buildErrorResponse(
+                        Response.Status.INTERNAL_SERVER_ERROR,
+                        AppErrorCodeEnum.PPL_900,
+                        "Unexpected Error"))
                 .build();
     }
 
