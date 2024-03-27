@@ -61,7 +61,7 @@ jobs:
       # Set Semvar
       - run: echo "SEMVER=patch" >> $GITHUB_ENV
 
-      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'breaking-change')) }}
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'major')) }}
         run: echo "SEMVER=major" >> $GITHUB_ENV
 
       # force semver if dev, !=main or skip release
