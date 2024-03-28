@@ -52,6 +52,8 @@ public class PaymentNoticeMapper {
                 .amount(paymentOption.getAmount())
                 .dueDate(paymentOption.getDueDate())
                 .numberOfInstallments(paymentOption.getTransfer().size())
+                .isPartialPayment(paymentOption.getIsPartialPayment())
+                .switchToExpired(paymentOption.getPaymentPosition().getSwitchToExpired())
                 .installments(paymentOption.getTransfer().stream().map(item ->
                         mapInstallment(item)).toList())
                 .build();
@@ -69,13 +71,12 @@ public class PaymentNoticeMapper {
                 .paTaxCode(transfer.getOrganizationFiscalCode())
                 .paFullName(transfer.getPaymentOption().getPaymentPosition().getFullName()) //TODO: Missing name from option/transfer list
                 .amount(transfer.getAmount())
-                .description(transfer.getPaymentOption().getDescription())
-                .isPartialPayment(transfer.getPaymentOption().getIsPartialPayment())
+                .description(transfer.getPaymentOption().getDescription()) //TODO: To define if remittance information to use
                 .dueDate(transfer.getPaymentOption().getDueDate())
                 .retentionDate(transfer.getPaymentOption().getRetentionDate())
                 .insertedDate(transfer.getInsertedDate())
                 .notificationFee(transfer.getPaymentOption().getNotificationFee())
-                .status(transfer.getPaymentOption().getStatus())
+                .status(transfer.getStatus())
                 .lastUpdatedDate(transfer.getLastUpdatedDate())
                 .build();
     }

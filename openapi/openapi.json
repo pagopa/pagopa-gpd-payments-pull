@@ -125,9 +125,6 @@
       "ErrorResponse" : {
         "type" : "object",
         "properties" : {
-          "type" : {
-            "type" : "string"
-          },
           "title" : {
             "type" : "string",
             "example" : "Internal Server Error"
@@ -176,10 +173,6 @@
             "description" : "Description of the OP (e.g. \"SISA - 741T, 942T - Checks without authorization or funding\")",
             "type" : "string"
           },
-          "isPartialPayment" : {
-            "description" : "Indicates whether the OP is part of an installment plan",
-            "type" : "boolean"
-          },
           "dueDate" : {
             "allOf" : [ {
               "$ref" : "#/components/schemas/LocalDateTime"
@@ -208,7 +201,7 @@
           },
           "status" : {
             "allOf" : [ {
-              "$ref" : "#/components/schemas/PaymentOptionStatus"
+              "$ref" : "#/components/schemas/TransferStatus"
             }, {
               "description" : "Status of the OP"
             } ]
@@ -333,6 +326,10 @@
               "description" : "Is the date by which the Payment option is payable."
             } ]
           },
+          "isPartialPayment" : {
+            "description" : "Indicates whether the OP is part of an installment plan",
+            "type" : "boolean"
+          },
           "switchToExpired" : {
             "description" : "Indicates, if set to true, in the case of PD created on GPD, that once the expiration date (dueDate ) has passed the PD is automatically set to the expired status",
             "type" : "boolean"
@@ -346,8 +343,8 @@
           }
         }
       },
-      "PaymentOptionStatus" : {
-        "enum" : [ "PO_UNPAID", "PO_PAID", "PO_PARTIALLY_REPORTED", "PO_REPORTED" ],
+      "TransferStatus" : {
+        "enum" : [ "T_UNREPORTED", "T_REPORTED" ],
         "type" : "string"
       }
     },

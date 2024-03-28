@@ -1,7 +1,7 @@
 package it.gov.pagopa.gpd.payments.pull.models;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentOptionStatus;
+import it.gov.pagopa.gpd.payments.pull.models.enums.TransferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +10,6 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -35,8 +33,6 @@ public class Installment implements Serializable {
     @Schema(description = "Description of the OP (e.g. \"SISA - 741T, 942T - Checks without authorization or funding\")",
             required = true)
     private String description;
-    @Schema(description = "Indicates whether the OP is part of an installment plan")
-    private Boolean isPartialPayment;
     @Schema(description = "Is the date by which (TO) the Payment option is payable.", required = true)
     private LocalDateTime dueDate;
     @Schema(description = "Not currently used in any logic. The purpose of this date will be to give the possibility" +
@@ -47,7 +43,7 @@ public class Installment implements Serializable {
     @Schema(description = "corresponds to the SEND notification costs")
     private long notificationFee;
     @Schema(description = "Status of the OP", required = true)
-    private PaymentOptionStatus status;
+    private TransferStatus status;
     @Schema(description = "OP update date", required = true)
     private LocalDateTime lastUpdatedDate;
 
