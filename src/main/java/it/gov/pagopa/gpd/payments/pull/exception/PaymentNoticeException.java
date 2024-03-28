@@ -1,6 +1,7 @@
 package it.gov.pagopa.gpd.payments.pull.exception;
 
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
+import lombok.Getter;
 import org.jboss.resteasy.reactive.ResponseStatus;
 
 import javax.ws.rs.core.Response;
@@ -12,9 +13,15 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.INTERNAL_SERVE
 /**
  * Base exception for PDF Engine exceptions
  */
+@Getter
 public class PaymentNoticeException extends RuntimeException {
 
-    /** Error code of this exception */
+    /** Error code of this exception
+     * -- GETTER --
+     *  Returns error code
+     *
+     * @return Error code of this exception
+     */
     private final AppErrorCodeEnum errorCode;
 
     /**
@@ -51,12 +58,4 @@ public class PaymentNoticeException extends RuntimeException {
         return status;
     }
 
-    /**
-     * Returns error code
-     *
-     * @return Error code of this exception
-     */
-    public AppErrorCodeEnum getErrorCode() {
-        return errorCode;
-    }
 }
