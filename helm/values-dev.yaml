@@ -81,7 +81,6 @@ microservice-chart:
     GPD_DB_URL: "vertx-reactive:postgresql://pagopa-d-gpd-postgresql.postgres.database.azure.com:5432/apd?sslmode=require&tcpKeepAlive=true"
   envFieldRef:
   envSecret:
-    # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
     OTEL_EXPORTER_OTLP_HEADERS: 'elastic-otl-secret-token'
     GPD_DB_USERNAME: "db-apd-user-name"
