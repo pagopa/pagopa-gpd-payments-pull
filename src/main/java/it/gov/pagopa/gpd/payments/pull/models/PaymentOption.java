@@ -9,7 +9,7 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -28,8 +28,14 @@ public class PaymentOption implements Serializable {
             required = true)
     private Integer numberOfInstallments;
 
+    @Schema(description = "total amount for the payment option")
+    private long amount;
+
     @Schema(description = "Is the date by which the Payment option is payable.")
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
+
+    @Schema(description = "Indicates whether the OP is part of an installment plan")
+    private Boolean isPartialPayment;
 
     @Schema(description = "Indicates, if set to true, in the case of PD created on GPD," +
             " that once the expiration date (dueDate ) has passed the PD is automatically set to the expired status",

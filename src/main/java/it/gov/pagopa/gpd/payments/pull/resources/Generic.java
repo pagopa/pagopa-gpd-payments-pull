@@ -19,19 +19,19 @@ import javax.ws.rs.core.UriBuilder;
 @Produces(value = MediaType.APPLICATION_JSON)
 public class Generic {
     @ConfigProperty(name = "quarkus.application.name", defaultValue = "")
-    private String name;
+    String name;
 
     @ConfigProperty(name = "quarkus.application.version", defaultValue = "")
-    private String version;
+    String version;
 
     @ConfigProperty(name = "quarkus.application.environment", defaultValue = "")
-    private String environment;
+    String environment;
 
 
     @Operation(hidden = true)
     @GET
     @Path("")
-    public Response home(){
+    public Response home() {
         return Response.seeOther(UriBuilder.fromUri("/swagger").build()).build();
     }
 

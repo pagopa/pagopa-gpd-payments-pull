@@ -1,6 +1,9 @@
 package it.gov.pagopa.gpd.payments.pull;
 
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.Startup;
+import io.quarkus.runtime.annotations.QuarkusMain;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Components;
@@ -12,6 +15,8 @@ import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -84,4 +89,22 @@ import javax.ws.rs.core.MediaType;
             }),
     info = @Info(title = "GPD Payments Pull Services", version = "${quarkus.application.version}"))
 @Startup
-public class App extends Application {}
+@QuarkusMain
+public class App extends Application {
+
+    public static void main(String[] args) {
+        Quarkus.run(QuarkusApp.class, args);
+    }
+
+    public static class QuarkusApp implements QuarkusApplication {
+
+        @Override
+        public int run(String... args) throws Exception {
+            Logger logger = LoggerFactory.getLogger(QuarkusApp.class);
+            logger.info("QuarkusApp Run");
+            Quarkus.waitForExit();
+            return 0;
+        }
+    }
+
+}

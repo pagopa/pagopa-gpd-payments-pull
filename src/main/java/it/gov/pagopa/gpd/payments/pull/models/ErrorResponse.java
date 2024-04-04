@@ -13,21 +13,19 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @Getter
 @Builder
 @Jacksonized
-@JsonPropertyOrder({"type", "title", "status", "detail", "instance"})
+@JsonPropertyOrder({"title", "status", "detail", "instance"})
 @RegisterForReflection
 public class ErrorResponse {
 
-  private String type;
+    @Schema(example = "Internal Server Error")
+    private String title;
 
-  @Schema(example = "Internal Server Error")
-  private String title;
+    @Schema(example = "500")
+    private int status;
 
-  @Schema(example = "500")
-  private int status;
+    @Schema(example = "An unexpected error has occurred. Please contact support.")
+    private String detail;
 
-  @Schema(example = "An unexpected error has occurred. Please contact support.")
-  private String detail;
-
-  @Schema(example = "PN-500")
-  private String instance;
+    @Schema(example = "PN-500")
+    private String instance;
 }

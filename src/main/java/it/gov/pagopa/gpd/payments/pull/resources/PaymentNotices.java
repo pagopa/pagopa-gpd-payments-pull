@@ -1,47 +1,65 @@
 package it.gov.pagopa.gpd.payments.pull.resources;
 
-import io.smallrye.mutiny.CompositeException;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.unchecked.Unchecked;
+import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
+import it.gov.pagopa.gpd.payments.pull.exception.InvalidTaxCodeHeaderException;
+import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
+import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.service.PaymentNoticesService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.jboss.resteasy.reactive.RestResponse.StatusCode.INTERNAL_SERVER_ERROR;
+/**
+ * Payment Notices REST Resources
+ */
 
 @Tag(name = "Payment Notices", description = "Payment Notices Operations")
-@Path("/payment-notices")
+@Path("/payment-notices/v1")
 @Produces(value = MediaType.APPLICATION_JSON)
 public class PaymentNotices {
 
-    private final Logger logger = LoggerFactory.getLogger(PaymentNotices.class);
+    private static final String REGEX = "[\n\r]";
+    private static final String REPLACEMENT = "_";
+    private static final int FISCAL_CODE_LENGTH = 16;
+
 
     @Inject
-    private PaymentNoticesService paymentNoticeService;
+    PaymentNoticesService paymentNoticeService;
 
+    /**
+     * Recovers a reactive stream of payment notices, using the debtor taxCode, and optionally the dueDate for which at least one
+     * Payment Option must be valid. Uses limit and page to limit result size
+     *
+     * @param taxCode debtor tax code to use for notices search. mandatory
+     * @param dueDate optional parameter to filter notices based on valid dueDate
+     * @param limit   page limit
+     * @param page    page number
+     * @return Response containing a reactive stream containing a list of notices, or a ErrorResponse in case of KO
+     */
     @Operation(
             summary = "Get Payment Notices",
             description = "Retrieve payment notices from ACA and GPD sources, filtered by a due date")
-    @SecurityRequirement(name="ApiKey")
+    @SecurityRequirement(name = "ApiKey")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON,
@@ -53,32 +71,33 @@ public class PaymentNotices {
                     ref = "#/components/responses/AppException400"),
     })
     @GET
-    @Path("")
     public Uni<Response> getPaymentNotices(
-            @QueryParam("dueDate") LocalDate dueDate
+            @Parameter(description = "Tax code to use for retrieving notices", required = true)
+            @HeaderParam("x-tax-code") String taxCode,
+            @Parameter(description = "Optional date to filter paymentNotices (if provided use the format yyyy-MM-dd)")
+            @QueryParam("dueDate") LocalDate dueDate,
+            @Valid @Positive @Max(100) @Parameter(description = "Number of elements on one page. Default = 50")
+            @DefaultValue("50") @QueryParam("limit") Integer limit,
+            @Valid @Min(0) @Parameter(description = "Page number. Page value starts from 0")
+            @DefaultValue("0") @QueryParam("page") Integer page
     ) {
-        Uni<List<PaymentNotice>> paymentNoticesUni = paymentNoticeService.getPaymentNotices(dueDate);
-        return paymentNoticesUni.onFailure().invoke(error -> {
-                    //TODO: Manage Error Checks
-                    throw new RuntimeException(error);
-                })
-                .onItem().transform(item -> Response.ok().entity(item).build());
-    }
 
-    @ServerExceptionMapper
-    public Response mapException(Exception exception) {
-
-        //TODO: Define Exception Cases
-
-        logger.error(exception.getMessage(), exception);
-
-        if (exception instanceof CompositeException compositeException) {
-            List<Throwable> causes = compositeException.getCauses();
-            exception = (Exception) causes.get(causes.size()-1);
+        if(taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
+            String errMsg = "Fiscal code header is null or not valid";
+            throw new InvalidTaxCodeHeaderException(AppErrorCodeEnum.PPL_601, errMsg);
         }
+        // replace new line and tab from user input to avoid log injection
+        taxCode = taxCode.replaceAll(REGEX, REPLACEMENT);
 
-        return Response.status(INTERNAL_SERVER_ERROR).build();
-
+        Uni<List<PaymentNotice>> paymentNoticesUni = paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
+        return paymentNoticesUni.onFailure().invoke(Unchecked.consumer(error -> {
+                    if(error instanceof PaymentNoticeException ex)
+                        throw new PaymentNoticeException(ex.getErrorCode(), ex.getMessage(), ex.getCause());
+                    else
+                        throw new AppErrorException(error);
+                }))
+                .onItem()
+                .transform(item -> Response.ok().entity(item).build());
     }
 
 
