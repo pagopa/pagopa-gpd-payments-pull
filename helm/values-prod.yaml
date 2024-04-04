@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "1.0.0"
+    tag: "1.0.0-3-fix-move-dockerfile-to-allow-release"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -78,6 +78,7 @@ microservice-chart:
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
+    JAVA_TOOL_OPTIONS: "-javaagent:/work/jmx_prometheus_javaagent-0.19.0.jar=12345:/work/config.yaml -javaagent:/work/opentelemetry-javaagent.jar -javaagent:/work/applicationinsights-agent.jar"
     GPD_DB_URL: "vertx-reactive:postgresql://pagopa-p-gpd-postgresql.postgres.database.azure.com:5432/apd?sslmode=require&tcpKeepAlive=true"
   envFieldRef:
   envSecret:
