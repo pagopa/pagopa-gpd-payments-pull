@@ -76,8 +76,8 @@ jobs:
         shell: bash
         id: run_integration_test
         run: |
-          export SUBKEY=${{ secrets.SUBKEY }}
-          export PULL_SUBKEY=${{ secrets.PULL_SUBKEY }}
+          export GPD_API_SUBSCRIPTION_KEY=${{ secrets.SUBKEY }}
+          export GPD_PULL_API_SUBSCRIPTION_KEY=${{ secrets.PULL_SUBKEY }}
           export CANARY=${{ inputs.canary }}
           export CUCUMBER_PUBLISH_TOKEN=${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
 
