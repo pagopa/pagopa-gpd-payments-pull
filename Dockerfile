@@ -12,6 +12,7 @@ ARG QUARKUS_PROFILE
 ARG APP_NAME
 
 USER root
+RUN echo $(ls -1 /code/src)
 RUN chmod 777 /code/agent/config.yaml
 # install wget
 RUN  microdnf  install -y wget
@@ -38,21 +39,25 @@ RUN mkdir -p /code/target/jmx && \
 RUN chmod 777 /code/jmx_prometheus_javaagent-0.19.0.jar && \
     cp /code/jmx_prometheus_javaagent-0.19.0.jar /code/target/jmx/jmx_prometheus_javaagent-0.19.0.jar
 
-## Stage 2 : create the docker final image
-FROM quay.io/quarkus/quarkus-micro-image:2.0
-WORKDIR /work/
-COPY --from=build /code/target/*-runner /work/application
-COPY --from=build /code/target/jmx/ /work/
-COPY --from=build /code/target/otel/ /work/
-COPY --from=build /code/target/appins/ /work/
+FROM registry.access.redhat.com/ubi8/openjdk-17:1.19
 
-# set up permissions for user `1001`
-RUN chmod 775 /work /work/application \
-  && chown -R 1001 /work \
-  && chmod -R "g+rwX" /work \
-  && chown -R 1001:root /work
+ENV LANGUAGE='en_US:en'
+
+# We make four distinct layers so if there are application changes the library layers can be re-used
+COPY --from=build /code/target/quarkus-app/lib/ /deployments/lib/
+COPY --from=build /code/target/quarkus-app/*.jar /deployments/
+COPY --from=build /code/target/quarkus-app/app/ /deployments/app/
+COPY --from=build /code/target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=build /code/target/jmx/ /deployments/
+COPY --from=build /code/target/otel/ /deployments/
+COPY --from=build /code/target/appins/ /deployments/
 
 EXPOSE 8080
-USER 1001
+EXPOSE 12345
+USER 185
 
-CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+ARG QUARKUS_PROFILE
+ARG APP_NAME
+
+ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Dquarkus.application.name=$APP_NAME -Dquarkus.profile=$QUARKUS_PROFILE -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
