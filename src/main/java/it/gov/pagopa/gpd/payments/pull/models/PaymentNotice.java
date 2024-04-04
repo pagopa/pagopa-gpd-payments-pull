@@ -32,7 +32,7 @@ public class PaymentNotice implements Serializable {
     @Schema(description = "Type of subject to whom the Debt Position " +
             "is registered (Will be F (Physical) or G(Legal))", required = true)
     private String debtorType;
-    @Schema(description =  "Tax code of the Creditor Body", required = true)
+    @Schema(description = "Tax code of the Creditor Body", required = true)
     private String paTaxCode;
     @Schema(description = "Company name of the Creditor Body", required = true)
     private String paFullName;

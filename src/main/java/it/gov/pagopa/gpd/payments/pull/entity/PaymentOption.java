@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentOptionStatus;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,7 +22,7 @@ import java.util.List;
         name = "payment_option",
         schema = "apd"
 )
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@paymentOptionId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@paymentOptionId")
 public class PaymentOption implements Serializable {
 
     /**

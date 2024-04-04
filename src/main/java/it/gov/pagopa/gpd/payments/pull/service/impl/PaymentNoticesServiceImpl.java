@@ -33,8 +33,8 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
                 }))
                 .onItem().transform(paymentPositions ->
                         paymentPositions.stream().filter(item -> keepAca ||
-                                !item.getIupd().contains("ACA")).map(PaymentNoticeMapper::manNotice)
-                        .toList()).onFailure().invoke(Unchecked.consumer(throwable -> {
+                                        !item.getIupd().contains("ACA")).map(PaymentNoticeMapper::manNotice)
+                                .toList()).onFailure().invoke(Unchecked.consumer(throwable -> {
                     throw new PaymentNoticeException(AppErrorCodeEnum.PPL_800,
                             String.format("Exception thrown during data recovery: %s", throwable));
                 }));

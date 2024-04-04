@@ -39,7 +39,7 @@ public class PaymentOption implements Serializable {
 
     @Schema(description = "Indicates, if set to true, in the case of PD created on GPD," +
             " that once the expiration date (dueDate ) has passed the PD is automatically set to the expired status",
-            required = true )
+            required = true)
     private Boolean switchToExpired;
 
     @Schema(description = "Array structure containing the installments that make up " +

@@ -4,8 +4,8 @@ import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import it.gov.pagopa.gpd.payments.pull.entity.Transfer;
 import it.gov.pagopa.gpd.payments.pull.models.Installment;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
-import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentNoticeStatus;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentOption;
+import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentNoticeStatus;
 
 /**
  * Payment Notice mapping methods
@@ -14,6 +14,7 @@ public class PaymentNoticeMapper {
 
     /**
      * Maps a paymentNotice, starting from an instance of PaymentPosition, complete with internal lists using entity relations
+     *
      * @param paymentPosition instance of PaymentPosition to be mapped
      * @return mapped PaymentNotice instance
      */
@@ -42,6 +43,7 @@ public class PaymentNoticeMapper {
 
     /**
      * Maps a PaymentOption model, starting from PaymentOption entity and related entities
+     *
      * @param paymentOption instance of PaymentOption entity to use as mapping source
      * @return Mapped PaymentOption model instance
      */
@@ -61,6 +63,7 @@ public class PaymentNoticeMapper {
 
     /**
      * Maps an Installment instance using Transfer data, and related entities
+     *
      * @param transfer instance of Transfer entity
      * @return mapped Installment instance
      */

@@ -1,4 +1,3 @@
-
 package it.gov.pagopa.gpd.payments.pull.models.enums;
 
 import lombok.Getter;
@@ -9,8 +8,8 @@ import lombok.Getter;
 @Getter
 public enum AppErrorCodeEnum {
 
-    PPL_600("PPL_600", "Error for invalid request parameters" ),
-    PPL_601("PPL_601", "Invalid fiscal code provided on payment notice request" ),
+    PPL_600("PPL_600", "Error for invalid request parameters"),
+    PPL_601("PPL_601", "Invalid fiscal code provided on payment notice request"),
 
     PPL_700("PPL_700", "Error recovering payment positions from DB"),
     PPL_800("PPL_800", "Error mapping response using recovered data from DB"),

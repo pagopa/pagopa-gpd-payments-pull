@@ -1,28 +1,19 @@
 package it.gov.pagopa.gpd.payments.pull.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 
 @Builder(toBuilder = true)
@@ -32,7 +23,7 @@ import org.hibernate.annotations.FetchMode;
 @AllArgsConstructor
 @Entity
 @Table(name = "payment_position", schema = "apd")
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@paymentPositionId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@paymentPositionId")
 public class PaymentPosition implements Serializable {
 
 
@@ -115,7 +106,7 @@ public class PaymentPosition implements Serializable {
 
     @Builder.Default
     @OneToMany(targetEntity = PaymentOption.class, fetch = FetchType.EAGER,
-               mappedBy = "paymentPosition", cascade = CascadeType.ALL, orphanRemoval = true)
+            mappedBy = "paymentPosition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentOption> paymentOption = new ArrayList<>();
 
 }

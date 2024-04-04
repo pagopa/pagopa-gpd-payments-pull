@@ -20,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Builder
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@transferMetadataId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@transferMetadataId")
 public class TransferMetadata implements Serializable {
 
     /**
