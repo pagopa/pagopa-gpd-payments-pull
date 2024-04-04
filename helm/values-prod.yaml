@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "1.0.0-1-fix-move-dockerfile-to-allow-release"
+    tag: "1.0.0-2-fix-move-dockerfile-to-allow-release"
     pullPolicy: Always
   livenessProbe:
     httpGet:
