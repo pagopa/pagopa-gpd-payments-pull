@@ -39,3 +39,8 @@ data "azurerm_key_vault_secret" "key_vault_integration_test_subkey" {
   name         = "integration-test-subkey"
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
+
+data "azurerm_key_vault_secret" "key_vault_integration_test_pull_subkey" {
+  name         = "integration-test-pull-subkey"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
