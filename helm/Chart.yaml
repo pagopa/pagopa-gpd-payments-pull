@@ -2,10 +2,9 @@ apiVersion: v2
 name: gpd-payments-pull
 description: Microservice pagopa-gpd-payments-pull
 type: application
-version: 0.0.1
-appVersion: 0.0.1
+version: 0.1.0
+appVersion: 1.0.0
 dependencies:
   - name: microservice-chart
     version: 2.8.0
     repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
-
