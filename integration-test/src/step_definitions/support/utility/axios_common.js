@@ -4,7 +4,6 @@ const fs = require('fs');
 function get(url, config) {
     return axios.get(url, config)
          .then(res => {
-            console.log(res);
             return res;
          })
          .catch(error => {
