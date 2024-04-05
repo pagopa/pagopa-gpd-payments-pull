@@ -30,7 +30,7 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
                 find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode) :
                 find(GET_VALID_POSITIONS_BY_TAXCODE_BASE.concat(" AND " +
                                 "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
-                        taxCode, dueDate.atTime(23, 59, 59, 999)))
+                        taxCode, dueDate.atStartOfDay()))
                 .page(page, limit).list();
     }
 

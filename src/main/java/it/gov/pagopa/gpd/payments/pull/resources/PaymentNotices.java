@@ -40,7 +40,6 @@ public class PaymentNotices {
 
     private static final String REGEX = "[\n\r]";
     private static final String REPLACEMENT = "_";
-    private static final int FISCAL_CODE_LENGTH = 16;
 
 
     @Inject
@@ -82,7 +81,7 @@ public class PaymentNotices {
             @DefaultValue("0") @QueryParam("page") Integer page
     ) {
 
-        if(taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
+        if(taxCode == null) {
             String errMsg = "Fiscal code header is null or not valid";
             throw new InvalidTaxCodeHeaderException(AppErrorCodeEnum.PPL_601, errMsg);
         }

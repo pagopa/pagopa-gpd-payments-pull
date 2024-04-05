@@ -1,19 +1,28 @@
 const assert = require('assert');
-const { Given, When, Then, After } = require('@cucumber/cucumber');
-const { executeDebtPositionCreationAndPublication, deletePositions } =
- require("./support/logic/gdp_logic.js");
-const { gpdSessionBundle } = require('./utility/data');
-const { getNotices } = require("./support/client/payment_pull_client.js");
+const { defineParameterType, Given, When, Then, After } = require('@cucumber/cucumber');
+const { executeDebtPositionCreationAndPublication, executeDebtPositionDeletion } =
+ require("./support/logic/gpd_logic");
+const { gpdSessionBundle } = require('./support/utility/data');
+const { getNotices } = require("./support/client/payment_pull_client");
+const { formatWithValidYear } = require('./support/utility/helpers');
 
 const idOrg = process.env.ORGANIZATIONAL_FISCAL_CODE;
+const positions = [];
+
+defineParameterType({
+  name: "boolean",
+  regexp: /true|false/,
+  transformer: (s) => s === "true" ? true : false
+});
+
 
 // After each Scenario
 After(async function () {
 
   // remove positions
   if (this.positions != null && this.positions.length > 0) {
-     for (index : positions) {
-        await executeDebtPositionDeletion(idOrg, positions[position]);
+     for (let position of positions) {
+        await executeDebtPositionDeletion(idOrg, position);
      }
   }
   this.positions = [];
@@ -27,18 +36,21 @@ Given('the payment notice {string} for the taxCode {string} with due date {strin
       await executeDebtPositionDeletion(idOrg, debtCode);
       let response = await executeDebtPositionCreationAndPublication(
         gpdSessionBundle, idOrg, debtCode, fiscalCode, dueDate, pullFlag);
-      assert.strictEqual(response.statusCode, 201);
+      assert.strictEqual(response.status, 201);
+      if (this.positions === undefined) {
+        this.positions = [];
+      }
       this.positions.push(response.data);
   }
 });
 
 When('an Http GET request is sent to recover notices for taxCode {string} with dueDate {string}',
  async function (taxCode, dueDate) {
-  this.response = await getNotices(taxCode, dueDate);
+  this.response = await getNotices(taxCode, formatWithValidYear(dueDate));
 });
 
 Then('response contains notice {string}', function (expectedCode) {
-  assert.strictEqual(this.response?.data?.attachments?.[0]?.iuv, expectedCode);
+  assert.ok(this.response?.data?.some(item => item.iupd === expectedCode));
 });
 
 Then('response has size {int}', function (expectedSize) {

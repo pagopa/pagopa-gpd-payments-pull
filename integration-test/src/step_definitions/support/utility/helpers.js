@@ -4,6 +4,11 @@ function addDays(days) {
   return date;
 }
 
+function formatWithValidYear(dateToFormat) {
+    var date = new Date(dateToFormat);
+    return format(new Date(date.setFullYear(date.getFullYear()+1)));
+}
+
 function format(dateToFormat) {
     let dd, MM, yyyy;
     dd = dateToFormat.getDate().toString().padStart(2, '0');
@@ -45,4 +50,5 @@ module.exports = {
   buildStringFromDate,
   makeidMix,
   makeidNumber,
+  formatWithValidYear
 }
