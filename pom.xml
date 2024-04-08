@@ -6,7 +6,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>gpd-payments-pull</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.4-1-fix-github-action</version>
 
     <properties>
         <jacoco.version>0.8.7</jacoco.version>
