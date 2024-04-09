@@ -35,9 +35,9 @@ microservice-chart:
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -67,7 +67,7 @@ microservice-chart:
           # Required
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "70"
-  fileConfig: {}
+  fileConfig: { }
   envConfig:
     APP_NAME: "gpd-payments-pull"
     APP_ENVIRONMENT: "dev"
@@ -78,19 +78,19 @@ microservice-chart:
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-    JAVA_TOOL_OPTIONS: "-javaagent:/work/jmx_prometheus_javaagent-0.19.0.jar=12345:/work/config.yaml -javaagent:/work/opentelemetry-javaagent.jar -javaagent:/work/applicationinsights-agent.jar"
+    JAVA_TOOL_OPTIONS: "-javaagent:/deployments/jmx_prometheus_javaagent-0.19.0.jar=12345:/deployments/config.yaml -javaagent:/deployments/opentelemetry-javaagent.jar -javaagent:/deployments/applicationinsights-agent.jar"
     GPD_DB_URL: "vertx-reactive:postgresql://pagopa-d-gpd-postgresql.postgres.database.azure.com:5432/apd?sslmode=require&tcpKeepAlive=true"
   envFieldRef:
   envSecret:
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
-    OTEL_EXPORTER_OTLP_HEADERS: 'elastic-otl-secret-token'
+    OTEL_EXPORTER_OTLP_HEADERS: 'elastic-apm-secret-token'
     GPD_DB_USERNAME: "db-apd-user-name"
     GPD_DB_PASSWORD: "db-apd-user-password"
   keyvault:
     name: "pagopa-d-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -117,5 +117,5 @@ microservice-chart:
         repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
         tag: "0.0.1"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
+      envConfig: { }
+      envSecret: { }

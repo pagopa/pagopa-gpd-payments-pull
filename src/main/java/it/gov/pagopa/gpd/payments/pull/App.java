@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
                 securitySchemes = {
                         @SecurityScheme(
                                 securitySchemeName = "ApiKey",
-                                apiKeyName = "",
+                                apiKeyName = "Ocp-Apim-Subscription-Key",
                                 type = SecuritySchemeType.APIKEY)
                 },
                 responses = {
