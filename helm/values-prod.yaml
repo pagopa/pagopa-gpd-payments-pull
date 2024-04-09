@@ -35,9 +35,9 @@ microservice-chart:
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -67,13 +67,14 @@ microservice-chart:
           # Required
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "70"
-  fileConfig: {}
+  fileConfig: { }
   envConfig:
     APP_ENVIRONMENT: "prod"
     WEBSITE_SITE_NAME: 'gpd-payments-pull' # required to show cloud role name in application insights
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
-    OTEL_RESOURCE_ATTRIBUTES: "service.name=pagopa-gpd-payments-pull-otl,deployment.environment=prod"
+    ENABLE_ECS_CONSOLE: "true"
+    OTEL_RESOURCE_ATTRIBUTES: "service.name=pagopa-gpd-payments-pull,deployment.environment=prod"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
@@ -88,8 +89,8 @@ microservice-chart:
   keyvault:
     name: "pagopa-p-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -116,5 +117,5 @@ microservice-chart:
         repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
         tag: "0.0.1"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
+      envConfig: { }
+      envSecret: { }

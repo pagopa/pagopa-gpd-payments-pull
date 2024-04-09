@@ -2,6 +2,7 @@ package it.gov.pagopa.gpd.payments.pull.resources;
 
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.unchecked.Unchecked;
+import it.gov.pagopa.gpd.payments.pull.config.Logged;
 import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
 import it.gov.pagopa.gpd.payments.pull.exception.InvalidTaxCodeHeaderException;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
@@ -17,17 +18,23 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
+import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 /**
  * Payment Notices REST Resources
@@ -41,8 +48,7 @@ public class PaymentNotices {
     private static final String REGEX = "[\n\r]";
     private static final String REPLACEMENT = "_";
     private static final int FISCAL_CODE_LENGTH = 16;
-
-
+    Logger logger = LoggerFactory.getLogger(PaymentNotices.class);
     @Inject
     PaymentNoticesService paymentNoticeService;
 
@@ -72,9 +78,10 @@ public class PaymentNotices {
     })
     @GET
     @Path("/v1")
+    @Logged
     public Uni<Response> getPaymentNotices(
             @Parameter(description = "Tax code to use for retrieving notices", required = true)
-            @HeaderParam("x-tax-code") String taxCode,
+            @HeaderParam("x-tax-code") @Size(max = 16) @NotNull String taxCode,
             @Parameter(description = "Optional date to filter paymentNotices (if provided use the format yyyy-MM-dd)")
             @QueryParam("dueDate") LocalDate dueDate,
             @Valid @Positive @Max(100) @Parameter(description = "Number of elements on one page. Default = 50")
@@ -82,6 +89,13 @@ public class PaymentNotices {
             @Valid @Min(0) @Parameter(description = "Page number. Page value starts from 0")
             @DefaultValue("0") @QueryParam("page") Integer page
     ) {
+
+        var startTime = System.currentTimeMillis();
+        Map<String, Object> args = new HashMap<>();
+        args.put("taxCode", taxCode);
+        args.put("dueDate", dueDate);
+        args.put("limit", limit);
+        args.put("page", page);
 
         if(taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
             String errMsg = "Fiscal code header is null or not valid";
@@ -98,7 +112,19 @@ public class PaymentNotices {
                         throw new AppErrorException(error);
                 }))
                 .onItem()
-                .transform(item -> Response.ok().entity(item).build());
+                .transform(item -> {
+                    logger.info("Successfully API Invocation getPaymentNotices",
+                            kv("method", "getPaymentNotices"),
+                            kv("startTime", startTime),
+                            kv("args", args),
+                            kv("responseTime", System.currentTimeMillis() - startTime),
+                            kv("status", "OK"),
+                            kv("httpCode", "200"),
+                            kv("requestId", UUID.randomUUID().toString()),
+                            kv("operationId", UUID.randomUUID().toString()),
+                            kv("response", mapToJSON(item)));
+                    return Response.ok().entity(item).build();
+                });
     }
 
 
