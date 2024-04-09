@@ -34,7 +34,7 @@ import java.util.List;
  */
 
 @Tag(name = "Payment Notices", description = "Payment Notices Operations")
-@Path("/payment-notices/v1")
+@Path("/payment-notices")
 @Produces(value = MediaType.APPLICATION_JSON)
 public class PaymentNotices {
 
@@ -71,6 +71,7 @@ public class PaymentNotices {
                     ref = "#/components/responses/AppException400"),
     })
     @GET
+    @Path("/v1")
     public Uni<Response> getPaymentNotices(
             @Parameter(description = "Tax code to use for retrieving notices", required = true)
             @HeaderParam("x-tax-code") String taxCode,
