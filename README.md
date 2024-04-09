@@ -1,4 +1,4 @@
-# pagoPA Receipt-pdf-service
+# pagoPA GPD Payments Pull
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-gpd-payments-pull&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa_pagopa-gpd-payments-pull)
 
@@ -77,7 +77,7 @@ You can run your application in dev mode that enables live coding using:
 
 #### Set environment variables
 
-`docker build -t pagopa-receipt -pdf-service .`
+`docker build -t pagopa-gpd-payments-pull .`
 
 `cp .env.example .env`
 
@@ -87,7 +87,7 @@ and replace in `.env` with correct values
 
 then type :
 
-`docker run -p 8080:8080 --env-file=./.env pagopa-receipt-pdf-service`
+`docker run -p 8080:8080 --env-file=./.env pagopa-gpd-payments-pull`
 
 ## Develop Locally 💻
 
