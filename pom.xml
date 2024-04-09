@@ -6,6 +6,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>gpd-payments-pull</artifactId>
+    <name>GPD Payments Pull Services</name>
     <version>1.0.5</version>
 
     <properties>

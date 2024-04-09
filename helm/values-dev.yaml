@@ -35,9 +35,9 @@ microservice-chart:
     servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
+    annotations: { }
     name: ""
-  podAnnotations: {}
+  podAnnotations: { }
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -67,9 +67,8 @@ microservice-chart:
           # Required
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "70"
-  fileConfig: {}
+  fileConfig: { }
   envConfig:
-    APP_NAME: "gpd-payments-pull"
     APP_ENVIRONMENT: "dev"
     WEBSITE_SITE_NAME: 'gpd-payments-pull' # required to show cloud role name in application insights
     APP_LOGGING_LEVEL: 'DEBUG'
@@ -89,8 +88,8 @@ microservice-chart:
   keyvault:
     name: "pagopa-d-gps-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
-  nodeSelector: {}
-  tolerations: []
+  nodeSelector: { }
+  tolerations: [ ]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -117,5 +116,5 @@ microservice-chart:
         repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
         tag: "0.0.1"
         pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
+      envConfig: { }
+      envSecret: { }

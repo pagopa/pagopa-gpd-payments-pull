@@ -18,13 +18,13 @@ import javax.ws.rs.core.UriBuilder;
 @Path("")
 @Produces(value = MediaType.APPLICATION_JSON)
 public class Generic {
-    @ConfigProperty(name = "quarkus.application.name", defaultValue = "")
+    @ConfigProperty(name = "app.name", defaultValue = "")
     String name;
 
-    @ConfigProperty(name = "quarkus.application.version", defaultValue = "")
+    @ConfigProperty(name = "app.version", defaultValue = "")
     String version;
 
-    @ConfigProperty(name = "quarkus.application.environment", defaultValue = "")
+    @ConfigProperty(name = "app.environment", defaultValue = "")
     String environment;
 
 
