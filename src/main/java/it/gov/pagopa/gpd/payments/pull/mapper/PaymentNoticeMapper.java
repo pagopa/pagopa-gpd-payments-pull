@@ -72,7 +72,7 @@ public class PaymentNoticeMapper {
                 .nav(transfer.getPaymentOption().getNav())
                 .iuv(transfer.getIuv())
                 .paTaxCode(transfer.getOrganizationFiscalCode())
-                .paFullName(transfer.getPaymentOption().getPaymentPosition().getFullName()) //TODO: Missing name from option/transfer list
+                .paFullName(transfer.getPaymentOption().getPaymentPosition().getCompanyName()) //TODO: Missing name from option/transfer list
                 .amount(transfer.getAmount())
                 .description(transfer.getPaymentOption().getDescription()) //TODO: To define if remittance information to use
                 .dueDate(transfer.getPaymentOption().getDueDate())

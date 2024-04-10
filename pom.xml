@@ -6,7 +6,8 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>gpd-payments-pull</artifactId>
-    <version>1.0.7</version>
+    <name>GPD Payments Pull Services</name>
+    <version>1.0.6-1-properties</version>
 
     <properties>
         <jacoco.version>0.8.7</jacoco.version>
@@ -51,8 +52,14 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.32</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkiverse.loggingjson</groupId>
+            <artifactId>quarkus-logging-json</artifactId>
+            <version>3.0.0</version>
         </dependency>
 
         <dependency>

@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @ApplicationScoped
 public class PaymentNoticesServiceImpl implements PaymentNoticesService {
 
@@ -22,21 +23,20 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     PaymentPositionRepository paymentPositionRepository;
 
     @ConfigProperty(name = "quarkus.app.payment_pull.keep_aca", defaultValue = "true")
-    private Boolean keepAca;
+    Boolean keepAca;
 
     @Override
     public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         return paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
                 .onFailure().invoke(Unchecked.consumer(throwable -> {
-                    throw new PaymentNoticeException(AppErrorCodeEnum.PPL_700,
-                            String.format("Exception thrown during data recovery: %s", throwable));
+                    throw new PaymentNoticeException(AppErrorCodeEnum.PPL_700, String.format("Exception thrown during data recovery: %s", throwable));
                 }))
-                .onItem().transform(paymentPositions ->
-                        paymentPositions.stream().filter(item -> keepAca ||
-                                        !item.getIupd().contains("ACA")).map(PaymentNoticeMapper::manNotice)
-                                .toList()).onFailure().invoke(Unchecked.consumer(throwable -> {
-                    throw new PaymentNoticeException(AppErrorCodeEnum.PPL_800,
-                            String.format("Exception thrown during data recovery: %s", throwable));
+                .onItem().transform(paymentPositions -> paymentPositions.stream()
+                        .filter(item -> keepAca || !item.getIupd().contains("ACA"))
+                        .map(PaymentNoticeMapper::manNotice)
+                        .toList())
+                .onFailure().invoke(Unchecked.consumer(throwable -> {
+                    throw new PaymentNoticeException(AppErrorCodeEnum.PPL_800, String.format("Exception thrown during data recovery: %s", throwable));
                 }));
     }
 

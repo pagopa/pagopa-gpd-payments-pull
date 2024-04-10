@@ -45,14 +45,7 @@ public class PaymentNoticeException extends RuntimeException {
     }
 
     public static Response.Status getHttpStatus(PaymentNoticeException e) {
-        Response.Status status;
-        if(e.getErrorCode().equals(AppErrorCodeEnum.PPL_900) ||
-                e.getErrorCode().equals(AppErrorCodeEnum.PPL_700)) {
-            status = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-            status = Response.Status.BAD_REQUEST;
-        }
-        return status;
+        return e.getErrorCode().getStatus();
     }
 
 }
