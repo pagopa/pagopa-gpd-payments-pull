@@ -11,7 +11,6 @@ import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.service.PaymentNoticesService;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +19,8 @@ import static it.gov.pagopa.gpd.payments.pull.Constants.DUE_DATE;
 import static it.gov.pagopa.gpd.payments.pull.Constants.FISCAL_CODE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -29,12 +29,9 @@ class PaymentNoticesTest {
 
     private static final String INVALID_DUE_DATE = "2024-04-21A";
     private static final String INVALID_FISCAL_CODE = "tooShort";
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @InjectMock(convertScopes = true)
     private PaymentNoticesService paymentNoticesService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Test
     void getPaymentNoticesOnValidTaxCodeShouldReturnData() throws JsonProcessingException {
@@ -107,7 +104,8 @@ class PaymentNoticesTest {
 
     @Test
     void getPaymentNoticesOnServiceErrorShouldReturnIntServerError() throws JsonProcessingException {
-        doReturn(Uni.createFrom().item(() -> {throw new RuntimeException();
+        doReturn(Uni.createFrom().item(() -> {
+            throw new RuntimeException();
         })).when(paymentNoticesService).getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0);
         String responseString =
                 given()

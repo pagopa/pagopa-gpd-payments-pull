@@ -23,7 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -81,7 +83,7 @@ public class PaymentNotices {
     @Logged
     public Uni<Response> getPaymentNotices(
             @Parameter(description = "Tax code to use for retrieving notices", required = true)
-            @HeaderParam("x-tax-code") @Size(max = 16) @NotNull String taxCode,
+            @HeaderParam("x-tax-code") String taxCode,
             @Parameter(description = "Optional date to filter paymentNotices (if provided use the format yyyy-MM-dd)")
             @QueryParam("dueDate") LocalDate dueDate,
             @Valid @Positive @Max(100) @Parameter(description = "Number of elements on one page. Default = 50")
