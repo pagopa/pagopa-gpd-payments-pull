@@ -4,7 +4,7 @@
     "title": "gpd-payments-pull",
     "description": "GPD Payments Pull Services",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "1.0.7"
+    "version": "1.0.7-1-VAS-733-feat-add-e2e-tests"
   },
   "servers": [
     {
