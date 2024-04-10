@@ -1,6 +1,7 @@
 package it.gov.pagopa.gpd.payments.pull.models;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentOptionStatus;
 import it.gov.pagopa.gpd.payments.pull.models.enums.TransferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,7 +44,7 @@ public class Installment implements Serializable {
     @Schema(description = "corresponds to the SEND notification costs")
     private long notificationFee;
     @Schema(description = "Status of the OP", required = true)
-    private TransferStatus status;
+    private PaymentOptionStatus status;
     @Schema(description = "OP update date", required = true)
     private LocalDateTime lastUpdatedDate;
 
