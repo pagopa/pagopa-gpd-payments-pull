@@ -1,6 +1,5 @@
-
-data "azurerm_user_assigned_identity" "identity_cd_01"{
-  name = "${local.prefix}-${var.env_short}-${local.domain}-01-github-cd-identity"
+data "azurerm_user_assigned_identity" "identity_cd_01" {
+  name                = "${local.prefix}-${var.env_short}-${local.domain}-01-github-cd-identity"
   resource_group_name = "${local.prefix}-${var.env_short}-identity-rg"
 }
 
@@ -37,10 +36,5 @@ data "azurerm_key_vault_secret" "key_vault_cucumber_token" {
 
 data "azurerm_key_vault_secret" "key_vault_integration_test_subkey" {
   name         = "integration-test-subkey"
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-}
-
-data "azurerm_key_vault_secret" "key_vault_integration_test_pull_subkey" {
-  name         = "integration-test-pull-subkey"
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
