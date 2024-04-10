@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +39,9 @@ class PaymentNoticesServiceImplTest {
 
     @Test
     void getPaymentNoticesShouldReturnOK() {
-        doReturn(Uni.createFrom().item(Arrays.asList(createPaymentPosition("", true),
-                createPaymentPosition("ACA_", false), createPaymentPosition("", false))))
+        doReturn(Uni.createFrom().item(Arrays.asList(createPaymentPosition("", false),
+                createPaymentPosition("ACA_", false),
+                createPaymentPosition("PARTIAL_", true))))
                 .when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
                         (FISCAL_CODE, DUE_DATE, 50, 0);
         List<PaymentNotice> response = assertDoesNotThrow(() ->
@@ -50,6 +52,7 @@ class PaymentNoticesServiceImplTest {
         assertEquals("iupd", response.get(0).getIupd());
         assertEquals(1, response.get(0).getPaymentOptions().size());
         assertEquals(1, response.get(1).getPaymentOptions().size());
+        assertEquals(2, response.get(1).getPaymentOptions().get(0).getInstallments().size());
         verify(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate(
                 FISCAL_CODE, DUE_DATE, 50, 0);
     }
@@ -90,17 +93,22 @@ class PaymentNoticesServiceImplTest {
                 .type(Type.F)
                 .build();
 
-        PaymentOption paymentOption = PaymentOption.builder()
+        List<PaymentOption> paymentOption = new ArrayList<>(
+                List.of(new PaymentOption[]{PaymentOption.builder()
                 .amount(100)
                 .dueDate(LocalDateTime.now())
                 .isPartialPayment(isPartialPayment)
-                .build();
+                .build()}));
 
-        paymentOption.setTransfer(Collections.singletonList(
-                Transfer.builder().amount(100).paymentOption(paymentOption).build())
-        );
-        paymentOption.setPaymentPosition(paymentPosition);
-        paymentPosition.setPaymentOption(Collections.singletonList(paymentOption));
+        if (isPartialPayment) {
+            paymentOption.add(PaymentOption.builder()
+                    .amount(100)
+                    .dueDate(LocalDateTime.now())
+                    .isPartialPayment(true)
+                    .build());
+        }
+
+        paymentPosition.setPaymentOption(paymentOption);
 
         return paymentPosition;
     }
