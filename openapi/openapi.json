@@ -1,10 +1,10 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "GPD Payments Pull Services",
+    "title": "gpd-payments-pull",
     "description": "GPD Payments Pull Services",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "1.0.3"
+    "version": "1.0.7"
   },
   "servers": [
     {
@@ -490,7 +490,7 @@
     "securitySchemes": {
       "ApiKey": {
         "type": "apiKey",
-        "name": ""
+        "name": "Ocp-Apim-Subscription-Key"
       }
     }
   }
