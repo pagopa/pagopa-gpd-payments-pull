@@ -16,6 +16,7 @@ import it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,17 +38,18 @@ class PaymentNoticesServiceImplTest {
 
     @Test
     void getPaymentNoticesShouldReturnOK() {
-        doReturn(Uni.createFrom().item(Arrays.asList(createPaymentPosition(""),
-                createPaymentPosition("ACA_"))))
+        doReturn(Uni.createFrom().item(Arrays.asList(createPaymentPosition("", true),
+                createPaymentPosition("ACA_", false), createPaymentPosition("", false))))
                 .when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
                         (FISCAL_CODE, DUE_DATE, 50, 0);
         List<PaymentNotice> response = assertDoesNotThrow(() ->
                         paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0))
                 .await().indefinitely();
         assertNotNull(response);
-        assertEquals(1, response.size());
+        assertEquals(2, response.size());
         assertEquals("iupd", response.get(0).getIupd());
         assertEquals(1, response.get(0).getPaymentOptions().size());
+        assertEquals(1, response.get(1).getPaymentOptions().size());
         verify(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate(
                 FISCAL_CODE, DUE_DATE, 50, 0);
     }
@@ -68,7 +70,7 @@ class PaymentNoticesServiceImplTest {
 
     @Test
     void getPaymentNoticesShouldReturnExceptionOnMappingError() {
-        PaymentPosition paymentPosition = createPaymentPosition("");
+        PaymentPosition paymentPosition = createPaymentPosition("", true);
         paymentPosition.setPaymentOption(null);
         doReturn(Uni.createFrom().item(Collections.singletonList(paymentPosition)))
                 .when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
@@ -81,7 +83,7 @@ class PaymentNoticesServiceImplTest {
         assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size()-1)).getErrorCode());
     }
 
-    PaymentPosition createPaymentPosition(String prefix) {
+    PaymentPosition createPaymentPosition(String prefix, Boolean isPartialPayment) {
         PaymentPosition paymentPosition = PaymentPosition.builder()
                 .iupd(prefix+"iupd")
                 .status(DebtPositionStatus.VALID)
@@ -90,7 +92,8 @@ class PaymentNoticesServiceImplTest {
 
         PaymentOption paymentOption = PaymentOption.builder()
                 .amount(100)
-                .isPartialPayment(false)
+                .dueDate(LocalDateTime.now())
+                .isPartialPayment(isPartialPayment)
                 .build();
 
         paymentOption.setTransfer(Collections.singletonList(

@@ -7,6 +7,11 @@ import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentOption;
 import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentNoticeStatus;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Payment Notice mapping methods
  */
@@ -19,7 +24,7 @@ public class PaymentNoticeMapper {
      * @return mapped PaymentNotice instance
      */
     public static PaymentNotice manNotice(PaymentPosition paymentPosition) {
-        return PaymentNotice
+        PaymentNotice paymentNotice = PaymentNotice
                 .builder()
                 .iupd(paymentPosition.getIupd())
                 .debtorFullName(paymentPosition.getFullName())
@@ -32,55 +37,63 @@ public class PaymentNoticeMapper {
                 .paFullName(paymentPosition.getCompanyName())
                 .publishDate(paymentPosition.getPublishDate())
                 .debtorType(paymentPosition.getType().toString())
-                .paymentOptions(paymentPosition.getPaymentOption().stream()
-                        .map(item -> {
-                            PaymentOption paymentOption = mapOption(item);
-                            paymentOption.setSwitchToExpired(paymentOption.getSwitchToExpired());
-                            return paymentOption;
-                        }).toList())
                 .build();
+        List<PaymentOption> paymentOptions = new java.util.ArrayList<>(paymentPosition.getPaymentOption().stream()
+                .filter(item -> !item.getIsPartialPayment()).map(
+                        item -> mapOptions(paymentPosition, Collections.singletonList(item))).toList());
+        if (paymentOptions.size() != paymentPosition.getPaymentOption().size()) {
+            paymentOptions.add(mapOptions(paymentPosition, paymentPosition.getPaymentOption().stream()
+                    .filter(it.gov.pagopa.gpd.payments.pull.entity.PaymentOption::getIsPartialPayment).toList()));
+        }
+        paymentNotice.setPaymentOptions(paymentOptions);
+        return paymentNotice;
     }
 
     /**
      * Maps a PaymentOption model, starting from PaymentOption entity and related entities
      *
-     * @param paymentOption instance of PaymentOption entity to use as mapping source
+     * @param paymentPosition instance of PaymentOption entity to use as mapping source
      * @return Mapped PaymentOption model instance
      */
-    public static PaymentOption mapOption(it.gov.pagopa.gpd.payments.pull.entity.PaymentOption paymentOption) {
+    public static PaymentOption mapOptions(
+            PaymentPosition paymentPosition,
+            List<it.gov.pagopa.gpd.payments.pull.entity.PaymentOption> paymentOptions) {
         return PaymentOption
                 .builder()
-                .description(paymentOption.getDescription())
-                .amount(paymentOption.getAmount())
-                .dueDate(paymentOption.getDueDate())
-                .numberOfInstallments(paymentOption.getTransfer().size())
-                .isPartialPayment(paymentOption.getIsPartialPayment())
-                .switchToExpired(paymentOption.getPaymentPosition().getSwitchToExpired())
-                .installments(paymentOption.getTransfer().stream().map(item ->
-                        mapInstallment(item)).toList())
+                .description(paymentOptions.get(0).getDescription())
+                .amount(paymentOptions.stream().map(
+                        it.gov.pagopa.gpd.payments.pull.entity.PaymentOption::getAmount).reduce(0L, Long::sum))
+                .dueDate(paymentOptions.stream().map(it.gov.pagopa.gpd.payments.pull.entity.PaymentOption::getDueDate)
+                        .max(LocalDateTime::compareTo).get())
+                .numberOfInstallments(paymentOptions.size())
+                .isPartialPayment(paymentOptions.get(0).getIsPartialPayment())
+                .switchToExpired(paymentPosition.getSwitchToExpired())
+                .installments(paymentOptions.stream().map(item ->
+                        mapInstallment(item, paymentPosition)).toList())
                 .build();
     }
 
     /**
-     * Maps an Installment instance using Transfer data, and related entities
+     * Maps an Installment instance using PaymentOption data, and related entities
      *
-     * @param transfer instance of Transfer entity
+     * @param paymentOption instance of PaymentOption entity
      * @return mapped Installment instance
      */
-    public static Installment mapInstallment(Transfer transfer) {
+    public static Installment mapInstallment(
+            it.gov.pagopa.gpd.payments.pull.entity.PaymentOption paymentOption, PaymentPosition paymentPosition) {
         return Installment.builder()
-                .nav(transfer.getPaymentOption().getNav())
-                .iuv(transfer.getIuv())
-                .paTaxCode(transfer.getOrganizationFiscalCode())
-                .paFullName(transfer.getPaymentOption().getPaymentPosition().getCompanyName()) //TODO: Missing name from option/transfer list
-                .amount(transfer.getAmount())
-                .description(transfer.getPaymentOption().getDescription()) //TODO: To define if remittance information to use
-                .dueDate(transfer.getPaymentOption().getDueDate())
-                .retentionDate(transfer.getPaymentOption().getRetentionDate())
-                .insertedDate(transfer.getInsertedDate())
-                .notificationFee(transfer.getPaymentOption().getNotificationFee())
-                .status(transfer.getStatus())
-                .lastUpdatedDate(transfer.getLastUpdatedDate())
+                .nav(paymentOption.getNav())
+                .iuv(paymentOption.getIuv())
+                .paTaxCode(paymentOption.getOrganizationFiscalCode())
+                .paFullName(paymentPosition.getCompanyName()) //TODO: Missing name from option/transfer list
+                .amount(paymentOption.getAmount())
+                .description(paymentOption.getDescription()) //TODO: To define if remittance information to use
+                .dueDate(paymentOption.getDueDate())
+                .retentionDate(paymentOption.getRetentionDate())
+                .insertedDate(paymentOption.getInsertedDate())
+                .notificationFee(paymentOption.getNotificationFee())
+                .status(paymentOption.getStatus())
+                .lastUpdatedDate(paymentOption.getLastUpdatedDate())
                 .build();
     }
 
