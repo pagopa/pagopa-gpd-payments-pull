@@ -9,7 +9,7 @@ async function getNotices(taxCode, dueDate) {
         params: {
             dueDate: dueDate,
             page: 0,
-            size: 50
+            size: 5
         },
         headers: {
             "x-tax-code": taxCode,
