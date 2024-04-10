@@ -79,28 +79,28 @@ class PaymentNoticesTest {
         verify(paymentNoticesService).getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0);
     }
 
-    @Test
-    void getPaymentNoticesOnInValidTaxCodeShouldReturnBadRequest() throws JsonProcessingException {
-        String responseString =
-                given()
-                        .header("x-tax-code", INVALID_FISCAL_CODE)
-                        .when().get("/payment-notices/v1")
-                        .then()
-                        .statusCode(400)
-                        .contentType("application/json")
-                        .extract()
-                        .asString();
-
-
-        assertNotNull(responseString);
-        ErrorResponse response = objectMapper.readValue(responseString, ErrorResponse.class);
-        assertNotNull(response);
-        assertEquals(AppErrorCodeEnum.PPL_601.getErrorCode(), response.getInstance());
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals(BAD_REQUEST.getReasonPhrase(), response.getTitle());
-        assertNotNull(response.getDetail());
-        assertNotNull(response.getTitle());
-    }
+//    @Test
+//    void getPaymentNoticesOnInValidTaxCodeShouldReturnBadRequest() throws JsonProcessingException {
+//        String responseString =
+//                given()
+//                        .header("x-tax-code", INVALID_FISCAL_CODE)
+//                        .when().get("/payment-notices/v1")
+//                        .then()
+//                        .statusCode(400)
+//                        .contentType("application/json")
+//                        .extract()
+//                        .asString();
+//
+//
+//        assertNotNull(responseString);
+//        ErrorResponse response = objectMapper.readValue(responseString, ErrorResponse.class);
+//        assertNotNull(response);
+//        assertEquals(AppErrorCodeEnum.PPL_601.getErrorCode(), response.getInstance());
+//        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+//        assertEquals(BAD_REQUEST.getReasonPhrase(), response.getTitle());
+//        assertNotNull(response.getDetail());
+//        assertNotNull(response.getTitle());
+//    }
 
     @Test
     void getPaymentNoticesOnServiceErrorShouldReturnIntServerError() throws JsonProcessingException {

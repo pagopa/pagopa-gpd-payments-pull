@@ -100,7 +100,7 @@ public class PaymentNotices {
         args.put("page", page);
 
         if(taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
-            String errMsg = "Fiscal code header is null or not valid";
+            String errMsg = "Fiscal code " + taxCode + " header is null or not valid";
             throw new InvalidTaxCodeHeaderException(AppErrorCodeEnum.PPL_601, errMsg);
         }
         // replace new line and tab from user input to avoid log injection
