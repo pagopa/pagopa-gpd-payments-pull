@@ -19,8 +19,7 @@ async function executeDebtPositionCreationAndPublication(bundle, idOrg, iupd, fi
     bundle.debtPosition.dueDate.setDate(bundle.debtPosition.dueDate.getDate() + 1);
     bundle.debtPosition.retentionDate = bundle.debtPosition.dueDate;
     //TODO: Add pullFlag property when defined on GPD
-    return await createAndPublishDebtPosition(bundle.organizationCode,
-        buildUpdateDebtPositionRequest(bundle.debtPosition, bundle.payer));
+    return await createAndPublishDebtPosition(bundle.organizationCode, buildUpdateDebtPositionRequest(bundle.debtPosition, bundle.payer));
 }
 
 async function executeDebtPositionDeletion(idOrg, iupd) {

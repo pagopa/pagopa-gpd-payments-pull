@@ -1,11 +1,11 @@
-const { addDays, buildStringFromDate, makeidNumber, makeidMix,  } = require("./helpers");
+const {addDays, buildStringFromDate, makeIdNumber, makeIdMix,} = require("./helpers");
 
 function buildDebtPositionDynamicData(gpdSessionBundle, iupdIn) {
     return {
         iupd: iupdIn,
-        iuv1: makeidNumber(17),
-        iuv2: makeidNumber(17),
-        iuv3: makeidNumber(17),
+        iuv1: makeIdNumber(17),
+        iuv2: makeIdNumber(17),
+        iuv3: makeIdNumber(17),
         iuvOK: process.env.iuv_ok,  // es. "11101751670642134"
         iuvKO: process.env.iuv_ko,  // es. "03163674189686371"
         iban: gpdSessionBundle.debtPosition.iban,
@@ -14,13 +14,13 @@ function buildDebtPositionDynamicData(gpdSessionBundle, iupdIn) {
         transferId1: '1',
         transferId2: '2',
         amount: 300.00,
-        receiptId: makeidMix(33),
+        receiptId: makeIdMix(33),
         pspId: "60000000001",
         pspBrokerId: "60000000001",
         pspChannelId: "60000000001_01",
         pspName: "PSP Paolo",
         pspFiscalCode: "CF60000000006",
-        idempotency: `60000000001_${makeidNumber(6)}${makeidMix(4)}`,
+        idempotency: `60000000001_${makeIdNumber(6)}${makeIdMix(4)}`,
         applicationDate: buildStringFromDate(addDays(0)),
         transferDate: buildStringFromDate(addDays(1)),
         transferOtherCIFiscalCode: "01020304059"

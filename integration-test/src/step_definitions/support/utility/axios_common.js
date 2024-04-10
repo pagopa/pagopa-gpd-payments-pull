@@ -1,14 +1,13 @@
 const axios = require("axios");
-const fs = require('fs');
 
 function get(url, config) {
     return axios.get(url, config)
-         .then(res => {
+        .then(res => {
             return res;
-         })
-         .catch(error => {
+        })
+        .catch(error => {
             return error.response;
-         });
+        });
 }
 
 function post(url, body, config) {

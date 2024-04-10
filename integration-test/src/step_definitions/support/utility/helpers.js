@@ -1,12 +1,12 @@
 function addDays(days) {
-  var date = new Date();
-  date.setDate(date.getDate() + days);
-  return date;
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
 }
 
 function formatWithValidYear(dateToFormat) {
-    var date = new Date(dateToFormat);
-    return format(new Date(date.setFullYear(date.getFullYear()+1)));
+    const date = new Date(dateToFormat);
+    return format(new Date(date.setFullYear(date.getFullYear() + 1)));
 }
 
 function format(dateToFormat) {
@@ -19,36 +19,36 @@ function format(dateToFormat) {
 }
 
 function buildStringFromDate(rawDate) {
-  var mm = rawDate.getMonth() + 1;
-  var dd = rawDate.getDate();
-  return [rawDate.getFullYear(), (mm>9 ? '' : '0') + mm, (dd>9 ? '' : '0') + dd].join('-');
+    const mm = rawDate.getMonth() + 1;
+    const dd = rawDate.getDate();
+    return [rawDate.getFullYear(), (mm > 9 ? '' : '0') + mm, (dd > 9 ? '' : '0') + dd].join('-');
 }
 
-function makeidMix(length) {
-  var result           = '';
-  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
+function makeIdMix(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
 
-function makeidNumber(length) {
-  var result           = '';
-  var characters       = '0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
- return result;
+function makeIdNumber(length) {
+    let result = '';
+    const characters = '0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
 
 module.exports = {
-  addDays,
-  format,
-  buildStringFromDate,
-  makeidMix,
-  makeidNumber,
-  formatWithValidYear
+    addDays,
+    format,
+    buildStringFromDate,
+    makeIdMix,
+    makeIdNumber,
+    formatWithValidYear
 }

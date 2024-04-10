@@ -1,4 +1,4 @@
-const { post, del } = require("../utility/axios_common");
+const {post, del} = require("../utility/axios_common");
 const fs = require("fs");
 
 const GPD_HOST = process.env.GPD_HOST;
@@ -18,8 +18,10 @@ function createAndPublishDebtPosition(orgId, body) {
 }
 
 function deleteDebtPosition(orgId, iupd, segCodes) {
-	const params = {}
-	if (segCodes) {params.segregationCodes = segCodes}
+    const params = {}
+    if (segCodes) {
+        params.segregationCodes = segCodes
+    }
     return del(GPD_HOST + `/organizations/${orgId}/debtpositions/${iupd}`, {
         timeout: API_TIMEOUT,
         params,

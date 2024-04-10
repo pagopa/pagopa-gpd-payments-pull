@@ -1,5 +1,4 @@
-const { get } = require("../utility/axios_common");
-const fs = require("fs");
+const {get} = require("../utility/axios_common");
 
 const GPD_PULL_HOST = process.env.GPD_PULL_HOST;
 const API_TIMEOUT = process.env.API_TIMEOUT;
@@ -22,5 +21,5 @@ async function getNotices(taxCode, dueDate) {
 }
 
 module.exports = {
-	getNotices
+    getNotices
 }
