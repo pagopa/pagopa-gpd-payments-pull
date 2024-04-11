@@ -4,7 +4,7 @@
     "title": "gpd-payments-pull",
     "description": "GPD Payments Pull Services",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "1.0.8"
+    "version": "1.0.9"
   },
   "servers": [
     {
@@ -237,7 +237,7 @@
           "status": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/TransferStatus"
+                "$ref": "#/components/schemas/PaymentOptionStatus"
               },
               {
                 "description": "Status of the OP"
@@ -422,10 +422,12 @@
           }
         }
       },
-      "TransferStatus": {
+      "PaymentOptionStatus": {
         "enum": [
-          "T_UNREPORTED",
-          "T_REPORTED"
+          "PO_UNPAID",
+          "PO_PAID",
+          "PO_PARTIALLY_REPORTED",
+          "PO_REPORTED"
         ],
         "type": "string"
       }

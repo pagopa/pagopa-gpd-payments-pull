@@ -114,7 +114,7 @@ public class PaymentOption implements Serializable {
     @Builder.Default
     @OneToMany(
             targetEntity = Transfer.class,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "paymentOption",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
