@@ -94,7 +94,7 @@ public class PaymentNotices {
 
         var startTime = System.currentTimeMillis();
         Map<String, Object> args = new HashMap<>();
-        args.put("taxCode", taxCode);
+        args.put("taxCode", taxCode != null ? taxCode.hashCode() : "null");
         args.put("dueDate", dueDate);
         args.put("limit", limit);
         args.put("page", page);

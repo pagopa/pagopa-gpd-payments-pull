@@ -26,7 +26,12 @@ public class LoggingInterceptor {
     private static String getParams(InvocationContext context) {
         Map<String, Object> params = new HashMap<>();
         for (int i = 0; i < context.getParameters().length; i++) {
-            params.put(context.getMethod().getParameters()[i].getName(), context.getParameters()[i]);
+            String name = context.getMethod().getParameters()[i].getName();
+            Object value = context.getParameters()[i];
+            if("taxCode".equals(name) && value != null) {
+                value = value.hashCode();
+            }
+            params.put(name, value);
         }
         return mapToJSON(params);
 
