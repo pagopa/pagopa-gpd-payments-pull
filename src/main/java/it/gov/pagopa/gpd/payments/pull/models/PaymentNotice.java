@@ -2,10 +2,7 @@ package it.gov.pagopa.gpd.payments.pull.models;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentNoticeStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -20,14 +17,17 @@ import java.util.List;
 @Builder
 @Jacksonized
 @RegisterForReflection
+@ToString
 public class PaymentNotice implements Serializable {
 
     @Schema(description = "Unique ID of the Debt Position (for positions originating from ACA the IUPD starts with ACA_)",
             required = true)
     private String iupd;
     @Schema(description = "Tax code of the person to whom the Debt Position is registered", required = true)
+    @ToString.Exclude
     private String debtorTaxCode;
     @Schema(description = "Full name of the person to whom the Debt Position is registered", required = true)
+    @ToString.Exclude
     private String debtorFullName;
     @Schema(description = "Type of subject to whom the Debt Position " +
             "is registered (Will be F (Physical) or G(Legal))", required = true)
