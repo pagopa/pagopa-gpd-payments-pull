@@ -28,7 +28,7 @@ public class LoggingInterceptor {
         for (int i = 0; i < context.getParameters().length; i++) {
             String name = context.getMethod().getParameters()[i].getName();
             Object value = context.getParameters()[i];
-            if("taxCode".equals(name)) {
+            if("taxCode".equals(name) && value != null) {
                 value = value.hashCode();
             }
             params.put(name, value);
