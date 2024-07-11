@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
+import static it.gov.pagopa.gpd.payments.pull.config.KeyValueStructuredArgument.kv;
 import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 /**
@@ -105,6 +105,8 @@ public class PaymentNotices {
         }
         // replace new line and tab from user input to avoid log injection
         taxCode = taxCode.replaceAll(REGEX, REPLACEMENT);
+
+        logger.info("TEST");
 
         Uni<List<PaymentNotice>> paymentNoticesUni = paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
         return paymentNoticesUni.onFailure().invoke(Unchecked.consumer(error -> {
