@@ -73,7 +73,7 @@ public class PaymentNotices {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON,
                             schema = @Schema(type = SchemaType.ARRAY, implementation = PaymentNotice.class))
             ),
-            @APIResponse(description = "Unexpected error occured while recovering payment notices",
+            @APIResponse(description = "Unexpected error occurred while recovering payment notices",
                     ref = "#/components/responses/InternalServerError"),
             @APIResponse(description = "Invalid or missing dueDate parameter",
                     ref = "#/components/responses/AppException400"),
@@ -87,9 +87,9 @@ public class PaymentNotices {
             @Parameter(description = "Optional date to filter paymentNotices (if provided use the format yyyy-MM-dd)")
             @QueryParam("dueDate") LocalDate dueDate,
             @Valid @Positive @Max(100) @Parameter(description = "Number of elements on one page. Default = 50")
-            @DefaultValue("50") @QueryParam("limit") Integer limit,
+            @DefaultValue("50") @QueryParam("limit") @Schema(defaultValue = "50") Integer limit,
             @Valid @Min(0) @Parameter(description = "Page number. Page value starts from 0")
-            @DefaultValue("0") @QueryParam("page") Integer page
+            @DefaultValue("0") @QueryParam("page") @Schema(defaultValue = "0") Integer page
     ) {
 
         var startTime = System.currentTimeMillis();
@@ -99,7 +99,7 @@ public class PaymentNotices {
         args.put("limit", limit);
         args.put("page", page);
 
-        if(taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
+        if (taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
             String errMsg = "Fiscal code " + taxCode + " header is null or not valid";
             throw new InvalidTaxCodeHeaderException(AppErrorCodeEnum.PPL_601, errMsg);
         }
@@ -108,7 +108,7 @@ public class PaymentNotices {
 
         Uni<List<PaymentNotice>> paymentNoticesUni = paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
         return paymentNoticesUni.onFailure().invoke(Unchecked.consumer(error -> {
-                    if(error instanceof PaymentNoticeException ex)
+                    if (error instanceof PaymentNoticeException ex)
                         throw new PaymentNoticeException(ex.getErrorCode(), ex.getMessage(), ex.getCause());
                     else
                         throw new AppErrorException(error);
@@ -128,6 +128,4 @@ public class PaymentNotices {
                     return Response.ok().entity(item).build();
                 });
     }
-
-
 }

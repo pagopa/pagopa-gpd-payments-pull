@@ -7,6 +7,7 @@ import io.quarkus.runtime.annotations.QuarkusMain;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import org.eclipse.microprofile.openapi.annotations.Components;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -14,6 +15,8 @@ import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.eclipse.microprofile.openapi.annotations.servers.Server;
+import org.eclipse.microprofile.openapi.annotations.servers.ServerVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +25,24 @@ import javax.ws.rs.core.MediaType;
 
 
 @OpenAPIDefinition(
+        info = @Info(title = "GPD Payments Pull Services", version = "${quarkus.application.version}"),
+        servers = {
+                @Server(url = "http://localhost:8080", description = "Localhost base URL"),
+                @Server(url = "https://{host}/gpd/payments/pull/api/v1", description = "Base URL",
+                        variables = {
+                        @ServerVariable(name = "host",
+                                enumeration = {"api.dev.platform.pagopa.it","api.uat.platform.pagopa.it","api.platform.pagopa.it"},
+                                defaultValue = "api.dev.platform.pagopa.it")})
+        },
         components =
         @Components(
                 securitySchemes = {
                         @SecurityScheme(
                                 securitySchemeName = "ApiKey",
                                 apiKeyName = "Ocp-Apim-Subscription-Key",
-                                type = SecuritySchemeType.APIKEY)
+                                type = SecuritySchemeType.APIKEY,
+                                in = SecuritySchemeIn.HEADER
+                        )
                 },
                 responses = {
                         @APIResponse(
@@ -85,8 +99,7 @@ import javax.ws.rs.core.MediaType;
                                                            "detail": "Payment Notice [<pn_id>] not found",
                                                            "instance": "PPL_900"
                                                          }""")),
-                }),
-        info = @Info(title = "GPD Payments Pull Services", version = "${quarkus.application.version}"))
+                }))
 @Startup
 @QuarkusMain
 public class App extends Application {
