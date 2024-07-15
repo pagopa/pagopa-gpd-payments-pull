@@ -87,9 +87,9 @@ public class PaymentNotices {
             @Parameter(description = "Optional date to filter paymentNotices (if provided use the format yyyy-MM-dd)")
             @QueryParam("dueDate") LocalDate dueDate,
             @Valid @Positive @Max(100) @Parameter(description = "Number of elements on one page. Default = 50")
-            @DefaultValue("50") @QueryParam("limit") Integer limit,
+            @DefaultValue("50") @QueryParam("limit") @Schema(defaultValue = "50") Integer limit,
             @Valid @Min(0) @Parameter(description = "Page number. Page value starts from 0")
-            @DefaultValue("0") @QueryParam("page") Integer page
+            @DefaultValue("0") @QueryParam("page") @Schema(defaultValue = "0") Integer page
     ) {
 
         var startTime = System.currentTimeMillis();

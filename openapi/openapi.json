@@ -65,7 +65,7 @@
           "description" : "Number of elements on one page. Default = 50",
           "schema" : {
             "format" : "int32",
-            "default" : "50",
+            "default" : 50,
             "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
@@ -76,7 +76,7 @@
           "description" : "Page number. Page value starts from 0",
           "schema" : {
             "format" : "int32",
-            "default" : "0",
+            "default" : 0,
             "minimum" : 0,
             "type" : "integer"
           }
