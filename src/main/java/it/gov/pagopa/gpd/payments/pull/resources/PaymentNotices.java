@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static it.gov.pagopa.gpd.payments.pull.config.KeyValueStructuredArgument.kv;
+import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
 import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 /**

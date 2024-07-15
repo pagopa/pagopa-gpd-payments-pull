@@ -3,6 +3,7 @@ package it.gov.pagopa.gpd.payments.pull.config;
 import io.quarkus.arc.Priority;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,15 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static it.gov.pagopa.gpd.payments.pull.config.KeyValueStructuredArgument.kv;
+import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
 import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 @Logged
 @Priority(2020)
+@Slf4j
 @Interceptor
 public class LoggingInterceptor {
-
-    Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
 
     private static String getParams(InvocationContext context) {
         Map<String, Object> params = new HashMap<>();
@@ -55,7 +55,7 @@ public class LoggingInterceptor {
                 httpCode = ex.getErrorCode().getStatus().getStatusCode();
             }
 
-            logger.error("Failed API Invocation getPaymentNotices",
+            log.error("Failed API Invocation getPaymentNotices",
                     kv("method", "getPaymentNotices"),
                     kv("startTime", startTime),
                     kv("args", mapToJSON(args)),
