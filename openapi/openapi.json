@@ -7,7 +7,17 @@
     "version" : "1.0.9"
   },
   "servers" : [ {
-    "url" : "${host}/gpd/payments/pull/api/v1"
+    "url" : "http://localhost:8080",
+    "description" : "Localhost base URL"
+  }, {
+    "url" : "https://{host}/gpd/payments/pull/api/v1",
+    "description" : "Base URL",
+    "variables" : {
+      "host" : {
+        "default" : "api.dev.platform.pagopa.it",
+        "enum" : [ "api.dev.platform.pagopa.it", "api.uat.platform.pagopa.it", "api.platform.pagopa.it" ]
+      }
+    }
   } ],
   "tags" : [ {
     "name" : "Payment Notices",
@@ -408,7 +418,8 @@
     "securitySchemes" : {
       "ApiKey" : {
         "type" : "apiKey",
-        "name" : "Ocp-Apim-Subscription-Key"
+        "name" : "Ocp-Apim-Subscription-Key",
+        "in" : "header"
       }
     }
   }
