@@ -12,7 +12,8 @@ import java.util.List;
 public class PaymentPositionRepository implements PanacheRepository<PaymentPosition> {
 
     private static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
-            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 AND ppos.status IN ('VALID', 'PARTIALLY_PAID')";
+            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
+                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true ";
 
     /**
      * Recovers a reactive stream of payment positions, using the debtor taxCode, and optionally the dueDate for which at least one
