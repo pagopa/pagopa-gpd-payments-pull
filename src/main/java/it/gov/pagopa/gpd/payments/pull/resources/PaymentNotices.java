@@ -20,13 +20,19 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
-import javax.ws.rs.*;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
@@ -35,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
 import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 /**
@@ -50,7 +55,9 @@ public class PaymentNotices {
     private static final String REGEX = "[\n\r]";
     private static final String REPLACEMENT = "_";
     private static final int FISCAL_CODE_LENGTH = 16;
+
     Logger logger = LoggerFactory.getLogger(PaymentNotices.class);
+
     @Inject
     PaymentNoticesService paymentNoticeService;
 
@@ -91,13 +98,21 @@ public class PaymentNotices {
             @Valid @Min(0) @Parameter(description = "Page number. Page value starts from 0")
             @DefaultValue("0") @QueryParam("page") @Schema(defaultValue = "0") Integer page
     ) {
-
         var startTime = System.currentTimeMillis();
         Map<String, Object> args = new HashMap<>();
         args.put("taxCode", taxCode != null ? taxCode.hashCode() : "null");
         args.put("dueDate", dueDate);
         args.put("limit", limit);
         args.put("page", page);
+
+        MDC.put("method", "getPaymentNotices");
+        MDC.put("startTime", String.valueOf(startTime));
+        MDC.put("args", mapToJSON(args));
+        MDC.put("responseTime", String.valueOf(System.currentTimeMillis() - startTime));
+        MDC.put("status", "OK");
+        MDC.put("httpCode", "200");
+        MDC.put("requestId", UUID.randomUUID().toString());
+        MDC.put("operationId", UUID.randomUUID().toString());
 
         if (taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
             String errMsg = "Fiscal code " + taxCode + " header is null or not valid";
@@ -115,16 +130,9 @@ public class PaymentNotices {
                 }))
                 .onItem()
                 .transform(item -> {
-                    logger.info("Successfully API Invocation getPaymentNotices",
-                            kv("method", "getPaymentNotices"),
-                            kv("startTime", startTime),
-                            kv("args", args),
-                            kv("responseTime", System.currentTimeMillis() - startTime),
-                            kv("status", "OK"),
-                            kv("httpCode", "200"),
-                            kv("requestId", UUID.randomUUID().toString()),
-                            kv("operationId", UUID.randomUUID().toString()),
-                            kv("response", mapToJSON(item)));
+                    MDC.put("response", mapToJSON(item));
+                    MDC.put("status", "OK");
+                    logger.info("Successfully API Invocation getPaymentNotices");
                     return Response.ok().entity(item).build();
                 });
     }
