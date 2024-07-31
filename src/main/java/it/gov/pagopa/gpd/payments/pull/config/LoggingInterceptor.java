@@ -33,16 +33,14 @@ public class LoggingInterceptor {
             params.put(name, value);
         }
         return mapToJSON(params);
-
     }
 
     @AroundInvoke
     Object logInvocation(InvocationContext context) throws Exception {
         var startTime = System.currentTimeMillis();
-
         String args = getParams(context);
 
-        Object ret = null;
+        Object ret;
         try {
             ret = context.proceed();
         } catch (Exception e) {
@@ -59,6 +57,7 @@ public class LoggingInterceptor {
             MDC.put("httpCode", String.valueOf(httpCode));
             MDC.put("faultCode", faultCode);
             MDC.put("faultDetail", e.getMessage());
+            MDC.put("args", mapToJSON(args));
             MDC.put("response", mapToJSON(buildErrorResponse(httpCode, faultCode, e.getMessage())));
             logger.error("Failed API Invocation getPaymentNotices");
             throw e;
@@ -66,7 +65,6 @@ public class LoggingInterceptor {
 
         return ret;
     }
-
 
     private ErrorResponse buildErrorResponse(int status, String errorCode, String message) {
         return ErrorResponse.builder()
@@ -76,5 +74,4 @@ public class LoggingInterceptor {
                 .instance(errorCode)
                 .build();
     }
-
 }
