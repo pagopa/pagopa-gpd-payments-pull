@@ -9,6 +9,8 @@ import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository;
 import it.gov.pagopa.gpd.payments.pull.service.PaymentNoticesService;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,6 +20,9 @@ import java.util.List;
 
 @ApplicationScoped
 public class PaymentNoticesServiceImpl implements PaymentNoticesService {
+
+    Logger logger = LoggerFactory.getLogger(PaymentNoticesServiceImpl.class);
+
 
     @Inject
     PaymentPositionRepository paymentPositionRepository;
@@ -32,6 +37,7 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
                     throw new PaymentNoticeException(AppErrorCodeEnum.PPL_700, String.format("Exception thrown during data recovery: %s", throwable));
                 }))
                 .onItem().transform(paymentPositions -> paymentPositions.stream()
+                        .peek(item -> logger.debug(item.toString()))
                         .filter(item -> keepAca || !item.getIupd().contains("ACA"))
                         .map(PaymentNoticeMapper::manNotice)
                         .toList())

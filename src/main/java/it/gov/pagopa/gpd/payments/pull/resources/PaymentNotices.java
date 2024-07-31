@@ -20,6 +20,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -35,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
 import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 /**
@@ -99,6 +99,15 @@ public class PaymentNotices {
         args.put("limit", limit);
         args.put("page", page);
 
+        MDC.put("method", "getPaymentNotices");
+        MDC.put("startTime", String.valueOf(startTime));
+        MDC.put("args", args.toString());
+        MDC.put("responseTime", String.valueOf(System.currentTimeMillis() - startTime));
+        MDC.put("status", "OK");
+        MDC.put("httpCode", "200");
+        MDC.put("requestId", UUID.randomUUID().toString());
+        MDC.put("operationId", UUID.randomUUID().toString());
+
         if (taxCode == null || taxCode.length() != FISCAL_CODE_LENGTH) {
             String errMsg = "Fiscal code " + taxCode + " header is null or not valid";
             throw new InvalidTaxCodeHeaderException(AppErrorCodeEnum.PPL_601, errMsg);
@@ -115,16 +124,8 @@ public class PaymentNotices {
                 }))
                 .onItem()
                 .transform(item -> {
-                    logger.info("Successfully API Invocation getPaymentNotices",
-                            kv("method", "getPaymentNotices"),
-                            kv("startTime", startTime),
-                            kv("args", args),
-                            kv("responseTime", System.currentTimeMillis() - startTime),
-                            kv("status", "OK"),
-                            kv("httpCode", "200"),
-                            kv("requestId", UUID.randomUUID().toString()),
-                            kv("operationId", UUID.randomUUID().toString()),
-                            kv("response", mapToJSON(item)));
+                    MDC.put("response", mapToJSON(item));
+                    logger.info("Successfully API Invocation getPaymentNotices");
                     return Response.ok().entity(item).build();
                 });
     }

@@ -5,15 +5,14 @@ import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv;
 import static it.gov.pagopa.gpd.payments.pull.util.CommonUtil.mapToJSON;
 
 @Logged
@@ -28,7 +27,7 @@ public class LoggingInterceptor {
         for (int i = 0; i < context.getParameters().length; i++) {
             String name = context.getMethod().getParameters()[i].getName();
             Object value = context.getParameters()[i];
-            if("taxCode".equals(name) && value != null) {
+            if ("taxCode".equals(name) && value != null) {
                 value = value.hashCode();
             }
             params.put(name, value);
@@ -50,23 +49,18 @@ public class LoggingInterceptor {
             var endTime = System.currentTimeMillis();
             int httpCode = 400;
             String faultCode = "UNKNOWN";
-            if(e instanceof PaymentNoticeException ex) {
+            if (e instanceof PaymentNoticeException ex) {
                 faultCode = ex.getErrorCode().getErrorCode();
                 httpCode = ex.getErrorCode().getStatus().getStatusCode();
             }
 
-            logger.error("Failed API Invocation getPaymentNotices",
-                    kv("method", "getPaymentNotices"),
-                    kv("startTime", startTime),
-                    kv("args", mapToJSON(args)),
-                    kv("responseTime", endTime - startTime),
-                    kv("status", "KO"),
-                    kv("httpCode", httpCode),
-                    kv("requestId", UUID.randomUUID().toString()),
-                    kv("operationId", UUID.randomUUID().toString()),
-                    kv("faultCode", faultCode),
-                    kv("faultDetail", e.getMessage()),
-                    kv("response", mapToJSON(buildErrorResponse(httpCode, faultCode, e.getMessage()))));
+            MDC.put("responseTime", String.valueOf(endTime - startTime));
+            MDC.put("status", "KO");
+            MDC.put("httpCode", String.valueOf(httpCode));
+            MDC.put("faultCode", faultCode);
+            MDC.put("faultDetail", e.getMessage());
+            MDC.put("response", mapToJSON(buildErrorResponse(httpCode, faultCode, e.getMessage())));
+            logger.error("Failed API Invocation getPaymentNotices");
             throw e;
         }
 
