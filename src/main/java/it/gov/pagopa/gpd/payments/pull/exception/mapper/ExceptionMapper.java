@@ -20,6 +20,10 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.INTERNAL_SERVE
 
 public class ExceptionMapper {
 
+    private static final String FAULT_CODE = "faultCode";
+    private static final String FAULT_DETAIL = "faultDetail";
+    private static final String RESPONSE = "response";
+
     Logger logger = LoggerFactory.getLogger(ExceptionMapper.class);
 
     private ErrorResponse buildErrorResponse(Response.Status status, AppErrorCodeEnum errorCode, String message) {
@@ -52,9 +56,9 @@ public class ExceptionMapper {
         ErrorResponse errorResponse = buildErrorResponse(Response.Status.BAD_REQUEST, AppErrorCodeEnum.PPL_600,
                 "Invalid parameters on request");
 
-        MDC.put("faultCode", "400");
-        MDC.put("faultDetail", getDetails(exception));
-        MDC.put("response", mapToJSON(errorResponse));
+        MDC.put(FAULT_CODE, "400");
+        MDC.put(FAULT_DETAIL, getDetails(exception));
+        MDC.put(RESPONSE, mapToJSON(errorResponse));
         logger.error(exception.getMessage(), exception);
 
         return Response.status(BAD_REQUEST).entity(
@@ -66,9 +70,9 @@ public class ExceptionMapper {
         Response.Status status = getHttpStatus(exception);
         ErrorResponse errorResponse = buildErrorResponse(status,
                 exception.getErrorCode(), exception.getMessage());
-        MDC.put("faultCode", String.valueOf(exception.getErrorCode()));
-        MDC.put("faultDetail", getDetails(exception));
-        MDC.put("response", mapToJSON(errorResponse));
+        MDC.put(FAULT_CODE, String.valueOf(exception.getErrorCode()));
+        MDC.put(FAULT_DETAIL, getDetails(exception));
+        MDC.put(RESPONSE, mapToJSON(errorResponse));
         logger.error(exception.getMessage(), exception);
         return Response.status(status)
                 .entity(errorResponse)
@@ -83,9 +87,9 @@ public class ExceptionMapper {
                 AppErrorCodeEnum.PPL_900,
                 "Unexpected Error");
         logger.error(exception.getMessage(), exception);
-        MDC.put("faultCode", "500");
-        MDC.put("faultDetail", getDetails(exception));
-        MDC.put("response", mapToJSON(errorResponse));
+        MDC.put(FAULT_CODE, "500");
+        MDC.put(FAULT_DETAIL, getDetails(exception));
+        MDC.put(RESPONSE, mapToJSON(errorResponse));
         return Response.status(INTERNAL_SERVER_ERROR)
                 .entity(errorResponse)
                 .build();
