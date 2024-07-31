@@ -9,7 +9,7 @@ on:
         type: string
 
 env:
-  APP_NAME: pagopa-gpd-payments-pull
+  APP_NAME: gpd-payments-pull
 
 
 permissions:

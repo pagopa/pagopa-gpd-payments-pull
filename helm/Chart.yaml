@@ -1,5 +1,5 @@
 apiVersion: v2
-name: pagopa-gpd-payments-pull
+name: gpd-payments-pull
 description: Microservice pagopa-gpd-payments-pull
 type: application
 version: 0.20.0
