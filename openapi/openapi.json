@@ -12,7 +12,7 @@
       "description": "Localhost base URL"
     },
     {
-      "url": "https://{host}/gpd/payments/pull/api/v1",
+      "url": "https://{host}/gpd-payments-pull/api/v1",
       "description": "Base URL",
       "variables": {
         "host": {
