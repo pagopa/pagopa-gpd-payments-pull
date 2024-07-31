@@ -37,7 +37,6 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
                     throw new PaymentNoticeException(AppErrorCodeEnum.PPL_700, String.format("Exception thrown during data recovery: %s", throwable));
                 }))
                 .onItem().transform(paymentPositions -> paymentPositions.stream()
-                        .peek(item -> logger.debug(item.toString()))
                         .filter(item -> keepAca || !item.getIupd().contains("ACA"))
                         .map(PaymentNoticeMapper::manNotice)
                         .toList())

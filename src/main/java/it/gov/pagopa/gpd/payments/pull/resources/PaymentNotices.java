@@ -125,6 +125,7 @@ public class PaymentNotices {
                 .onItem()
                 .transform(item -> {
                     MDC.put("response", mapToJSON(item));
+                    MDC.put("status", "OK");
                     logger.info("Successfully API Invocation getPaymentNotices");
                     return Response.ok().entity(item).build();
                 });

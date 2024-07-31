@@ -4,10 +4,10 @@ import io.smallrye.mutiny.CompositeException;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
-import org.jboss.logmanager.MDC;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
@@ -55,6 +55,7 @@ public class ExceptionMapper {
         MDC.put("faultCode", "400");
         MDC.put("faultDetail", getDetails(exception));
         MDC.put("response", mapToJSON(errorResponse));
+        MDC.put("status", "KO");
         logger.error(exception.getMessage(), exception);
 
         return Response.status(BAD_REQUEST).entity(
@@ -69,6 +70,7 @@ public class ExceptionMapper {
         MDC.put("faultCode", String.valueOf(exception.getErrorCode()));
         MDC.put("faultDetail", getDetails(exception));
         MDC.put("response", mapToJSON(errorResponse));
+        MDC.put("status", "KO");
         logger.error(exception.getMessage(), exception);
         return Response.status(status)
                 .entity(errorResponse)
@@ -86,6 +88,7 @@ public class ExceptionMapper {
         MDC.put("faultCode", "500");
         MDC.put("faultDetail", getDetails(exception));
         MDC.put("response", mapToJSON(errorResponse));
+        MDC.put("status", "KO");
         return Response.status(INTERNAL_SERVER_ERROR)
                 .entity(errorResponse)
                 .build();
