@@ -15,7 +15,6 @@ class OpenApiGenerationTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-
     @Test
     void swaggerSpringPlugin() throws Exception {
 
@@ -35,6 +34,4 @@ class OpenApiGenerationTest {
         Files.write(basePath.resolve("openapi.json"), formatted.getBytes());
 
     }
-
-
 }
