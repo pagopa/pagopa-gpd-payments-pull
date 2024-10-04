@@ -291,10 +291,11 @@ function buildDebtPositionDynamicData(gpdSessionBundle, iupdIn) {
     };
 }
 
-function buildUpdateDebtPositionRequest(debtPosition, payer) {
+function buildUpdateDebtPositionRequest(debtPosition, payer, pullFlag) {
     return {
         iupd: debtPosition.iupd,
         type: "F",
+        pull: pullFlag,
         fiscalCode: payer.fiscalCode,
         fullName: payer.name,
         streetName: payer.streetName,
