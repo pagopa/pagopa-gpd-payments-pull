@@ -6,7 +6,7 @@ const API_TIMEOUT = process.env.API_TIMEOUT;
 async function getNotices(taxCode, dueDate) {
     let params = {
         page: 0,
-        size: 10
+        limit: 10
     };
 
     if (dueDate) {
