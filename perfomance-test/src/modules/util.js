@@ -3,6 +3,7 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
         "iupd": iupd,
         "organizationFiscalCode": organizationTaxCode,
         "type": "F",
+        "pull": true,
         "companyName": "EC Demo Pagamenti Pull Test",
         "fullName": "EC Demo Pagamenti Pull Test",
         "fiscalCode": userTaxCode,

@@ -21,7 +21,7 @@ export async function setup() {
     await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
     let response = await postToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions`, buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode));
     check(response, {
-        'Create debt position to be retrieved status is 200': () => response.status === 200
+        'Create debt position to be retrieved status is 201': () => response.status === 201
     });
 }
 
