@@ -8,6 +8,10 @@ export function getToService(endpoint, userTaxCode) {
     'x-tax-code': userTaxCode,
     "Content-Type": "application/json"
   };
+  let params = {
+    page: 0,
+    limit: 10
+};
 
   return http.get(url, { headers, responseType: "text", params });
 }

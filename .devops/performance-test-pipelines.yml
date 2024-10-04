@@ -45,4 +45,3 @@ steps:
     displayName: Run k6 payment_options_service_test on ${{ parameters.ENVIRONMENT }}
     env:
       OCP_APIM_SUBSCRIPTION_KEY: ${{ variables.API_SUBSCRIPTION_KEY }}
-

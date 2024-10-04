@@ -3,7 +3,9 @@
     {
       "env": "uat",
       "paymentsPullServiceURIBasePath": "https://api.uat.platform.pagopa.it/gpd-payments-pull/api/v1",
-      "userTaxCode": "77777777777"
+      "gpdURIBasePath": "https://api.uat.platform.pagopa.it/gpd/api/v1",
+      "userTaxCode": "STCCST83A15L0002",
+      "organizationTaxCode": "77777777777"
     }
   ]
 }
