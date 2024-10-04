@@ -1,0 +1,9 @@
+{
+  "environment": [
+    {
+      "env": "uat",
+      "paymentsPullServiceURIBasePath": "https://api.uat.platform.pagopa.it/gpd-payments-pull/api/v1",
+      "userTaxCode": "77777777777"
+    }
+  ]
+}

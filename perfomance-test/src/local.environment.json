@@ -1,0 +1,9 @@
+{
+  "environment": [
+    {
+      "env": "local",
+      "paymentsPullServiceURIBasePath": "http://localhost:8080",
+      "userTaxCode": "77777777777"
+    }
+  ]
+}
