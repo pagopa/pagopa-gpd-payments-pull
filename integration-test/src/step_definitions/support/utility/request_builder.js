@@ -45,7 +45,7 @@ function buildDebtPositionComplex(iupd, organizationCode, taxCode) {
     return {
         "iupd": iupd,
         "organizationFiscalCode": organizationCode,
-        "type": "F",,
+        "type": "F",
         "pull": true,
         "companyName": "EC Demo Pagamenti Pull Test",
         "fullName": "EC Demo Pagamenti Pull Test",
@@ -158,7 +158,7 @@ function buildDebtPositionWithInstallments(iupd, organizationCode, taxCode) {
     return {
         "iupd": iupd,
         "organizationFiscalCode": organizationCode,
-        "type": "F",,
+        "type": "F",
         "pull": true,
         "companyName": "EC Demo Pagamenti Pull Test",
         "fullName": "EC Demo Pagamenti Pull Test",
