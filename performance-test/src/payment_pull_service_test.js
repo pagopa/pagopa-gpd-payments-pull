@@ -18,8 +18,9 @@ const iupd = "payment-pull-performance-tests-debt-position";
 
 export async function setup() {
     // 2. setup code
-    await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
-    let response = await postToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions`, buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode));
+    const r = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
+    const body = buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode);
+    let response = await postToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions?toPublish=false`, body);
     check(response, {
         'Create debt position to be retrieved status is 201': () => response.status === 201
     });

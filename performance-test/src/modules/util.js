@@ -26,7 +26,6 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "transfer": [
                     {
                         "organizationFiscalCode": organizationTaxCode,
-                        "companyName": "test",
                         "idTransfer": "1",
                         "amount": 120,
                         "remittanceInformation": "Test Pull",
@@ -50,7 +49,6 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "transfer": [
                     {
                         "organizationFiscalCode": organizationTaxCode,
-                        "companyName": "test",
                         "idTransfer": "1",
                         "amount": 100,
                         "remittanceInformation": "Test Pull",
@@ -74,7 +72,6 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "transfer": [
                     {
                         "organizationFiscalCode": organizationTaxCode,
-                        "companyName": "test",
                         "idTransfer": "1",
                         "amount": 200,
                         "remittanceInformation": "Test Pull",
@@ -98,7 +95,6 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "transfer": [
                     {
                         "organizationFiscalCode": organizationTaxCode,
-                        "companyName": "test",
                         "idTransfer": "1",
                         "amount": 300,
                         "remittanceInformation": "Test Pull",
