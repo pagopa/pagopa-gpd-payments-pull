@@ -18,5 +18,5 @@ export function deleteToGPD(endpoint) {
     "Content-Type": "application/json"
   };
 
-  return http.delete(url, { headers, responseType: "text" });
+  return http.del(url, { headers, responseType: "text" });
 }
