@@ -18,9 +18,8 @@ const iupd = "payment-pull-performance-tests-debt-position";
 
 export async function setup() {
     // 2. setup code
-    const r = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
-    const body = buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode);
-    let response = await postToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions?toPublish=false`, body);
+    await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
+    let response = await postToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions?toPublish=true`, buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode));
     check(response, {
         'Create debt position to be retrieved status is 201': () => response.status === 201
     });
@@ -36,7 +35,8 @@ export default function () {
     check(response, {
         'Payment Pull Service getPaymentNotices status is 200': () => response.status === 200,
         'Payment Pull Service getPaymentNotices body has list of payment notices': () =>
-            Boolean(responseBody && responseBody.length && responseBody.length === 1)
+            Boolean(responseBody && responseBody.length && responseBody.length > 0),
+        'Payment Pull Service getPaymentNotices the notice has the expected iupd': () => responseBody.some(po => po.iupd === iupd)
     });
 }
 

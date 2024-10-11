@@ -17,7 +17,7 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "amount": 120,
                 "description": "Test Pull - opzione totale e piano rateale",
                 "isPartialPayment": false,
-                "dueDate": "2024-10-30T23:59:59",
+                "dueDate": createDueDate(),
                 "retentionDate": "2024-11-30T23:59:59",
                 "paymentDate": null,
                 "reportingDate": null,
@@ -40,7 +40,7 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "amount": 100,
                 "description": "Test Pull - opzione totale e piano rateale",
                 "isPartialPayment": true,
-                "dueDate": "2024-10-30T23:59:59",
+                "dueDate": createDueDate(),
                 "retentionDate": "2024-10-30T23:59:59",
                 "paymentDate": null,
                 "reportingDate": null,
@@ -63,7 +63,7 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "amount": 200,
                 "description": "Test Pull - opzione totale e piano rateale",
                 "isPartialPayment": true,
-                "dueDate": "2024-11-30T23:59:59",
+                "dueDate": createDueDate(),
                 "retentionDate": "2024-11-30T23:59:59",
                 "paymentDate": null,
                 "reportingDate": null,
@@ -86,7 +86,7 @@ export function buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode)
                 "amount": 300,
                 "description": "Test Pull - opzione totale e piano rateale",
                 "isPartialPayment": true,
-                "dueDate": "2024-12-30T23:59:59",
+                "dueDate": createDueDate(),
                 "retentionDate": "2024-12-30T23:59:59",
                 "paymentDate": null,
                 "reportingDate": null,
@@ -115,4 +115,10 @@ function makeIdNumber(length) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+}
+
+function createDueDate() {
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date.toISOString().slice(0, 19);
 }

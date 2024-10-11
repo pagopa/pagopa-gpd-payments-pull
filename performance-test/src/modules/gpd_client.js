@@ -7,7 +7,7 @@ export function postToGPD(endpoint, body) {
     "Content-Type": "application/json"
   };
 
-  return http.post(endpoint, body, { headers, responseType: "text" });
+  return http.post(endpoint, JSON.stringify(body), { headers, responseType: "text" });
 }
 
 export function deleteToGPD(endpoint) {
