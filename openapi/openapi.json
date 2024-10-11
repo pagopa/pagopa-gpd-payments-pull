@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "gpd-payments-pull",
+    "title": "pagopa-gpd-payments-pull",
     "description": "GPD Payments Pull Services",
     "termsOfService": "https://www.pagopa.gov.it/",
     "version": "1.1.3"
@@ -12,7 +12,7 @@
       "description": "Localhost base URL"
     },
     {
-      "url": "https://{host}/gpd-payments-pull/api/v1",
+      "url": "https://{host}/pagopa-gpd-payments-pull/v1",
       "description": "Base URL",
       "variables": {
         "host": {

@@ -5,6 +5,7 @@ function buildDebtPositionOneOption(iupd, iuv, organizationCode, taxCode) {
         "iupd": iupd,
         "organizationFiscalCode": organizationCode,
         "type": "F",
+        "pull": true,
         "companyName": "EC Demo Pagamenti Pull Test",
         "fullName": "EC Demo Pagamenti Pull Test",
         "fiscalCode": taxCode,
@@ -45,6 +46,7 @@ function buildDebtPositionComplex(iupd, organizationCode, taxCode) {
         "iupd": iupd,
         "organizationFiscalCode": organizationCode,
         "type": "F",
+        "pull": true,
         "companyName": "EC Demo Pagamenti Pull Test",
         "fullName": "EC Demo Pagamenti Pull Test",
         "fiscalCode": taxCode,
@@ -157,6 +159,7 @@ function buildDebtPositionWithInstallments(iupd, organizationCode, taxCode) {
         "iupd": iupd,
         "organizationFiscalCode": organizationCode,
         "type": "F",
+        "pull": true,
         "companyName": "EC Demo Pagamenti Pull Test",
         "fullName": "EC Demo Pagamenti Pull Test",
         "fiscalCode": taxCode,
@@ -291,10 +294,11 @@ function buildDebtPositionDynamicData(gpdSessionBundle, iupdIn) {
     };
 }
 
-function buildUpdateDebtPositionRequest(debtPosition, payer) {
+function buildUpdateDebtPositionRequest(debtPosition, payer, pullFlag) {
     return {
         iupd: debtPosition.iupd,
         type: "F",
+        pull: pullFlag,
         fiscalCode: payer.fiscalCode,
         fullName: payer.name,
         streetName: payer.streetName,

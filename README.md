@@ -109,7 +109,10 @@ Typing `mvn clean verify`
 - Install dependencies: `yarn install`
 - Run the test: `yarn test`
 
-#### Performance test [WIP]
+#### Performance test
+
+- Run the application
+- Run the test: `sh run_performance_test.sh local <load|stress|spike|soak|...> <script-name> <db-name>`
 
 ---
 
