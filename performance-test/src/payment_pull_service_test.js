@@ -8,6 +8,7 @@ import { check } from 'k6';
 const varsArray = new SharedArray('vars', function () {
     return JSON.parse(open(`./${__ENV.VARS}`)).environment;
 });
+export const options = JSON.parse(open(__ENV.TEST_TYPE));
 export const ENV_VARS = varsArray[0];
 
 const paymentsPullServiceURIBasePath = `${ENV_VARS.paymentsPullServiceURIBasePath}`;
