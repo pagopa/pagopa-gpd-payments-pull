@@ -88,7 +88,7 @@ public class ExceptionMapper {
         ErrorResponse errorResponse = buildErrorResponse(
                 Response.Status.INTERNAL_SERVER_ERROR,
                 AppErrorCodeEnum.PPL_900,
-                "Unexpected Error");
+                "Unexpected Error" + exception.getMessage());
         logger.error(exception.getMessage(), exception);
         MDC.put(FAULT_CODE, "500");
         MDC.put(FAULT_DETAIL, getDetails(exception));
