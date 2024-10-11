@@ -31,6 +31,9 @@ export default function () {
 
     let responseBody = JSON.parse(response.body);
 
+    if (response.status === 500) {
+        console.log("ERROR: 500 ", responseBody);
+    }
     check(response, {
         'Payment Pull Service getPaymentNotices status is 200': () => response.status === 200,
         'Payment Pull Service getPaymentNotices body has list of payment notices': () =>
