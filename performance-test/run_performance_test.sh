@@ -22,6 +22,16 @@ then
   echo "No script name specified: sh run_performance_test.sh <local|dev|uat|prod> <load|stress|spike|soak|...> <script-name> <db-name> <apim_subscription_key>"
   exit 1
 fi
+if [ -z "$DB_NAME" ]
+then
+  echo "No DB name specified: sh run_performance_test.sh <local|dev|uat|prod> <load|stress|spike|soak|...> <script-name> <db-name> <apim_subscription_key>"
+  exit 1
+fi
+if [ -z "$OCP_APIM_SUBSCRIPTION_KEY" ]
+then
+  echo "No subkey specified: sh run_performance_test.sh <local|dev|uat|prod> <load|stress|spike|soak|...> <script-name> <db-name> <apim_subscription_key>"
+  exit 1
+fi
 
 export env=${ENVIRONMENT}
 export type=${TYPE}
