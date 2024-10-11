@@ -8,7 +8,7 @@ import { check } from 'k6';
 const varsArray = new SharedArray('vars', function () {
     return JSON.parse(open(`./${__ENV.VARS}`)).environment;
 });
-export const options = JSON.parse(open(__ENV.TEST_TYPE));
+export const options = JSON.parse(open(__ENV.TEST_TYPE)); // necessary to make the selected test configuration available to k6
 export const ENV_VARS = varsArray[0];
 
 const paymentsPullServiceURIBasePath = `${ENV_VARS.paymentsPullServiceURIBasePath}`;
@@ -21,9 +21,7 @@ export async function setup() {
     // 2. setup code
     await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
     let response = await postToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions?toPublish=true`, buildDebtPositionComplex(iupd, organizationTaxCode, userTaxCode));
-    check(response, {
-        'Create debt position to be retrieved status is 201': () => response.status === 201
-    });
+    check(response, { 'Create debt position to be retrieved status is 201': () => response.status === 201 });
 }
 
 export default function () {
@@ -43,5 +41,6 @@ export default function () {
 
 export async function teardown(data) {
     // 4. teardown code
-    await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
+    let response = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
+    check(response, { 'Delete performance test debt position status is 200': () => response.status === 200 });
 }
