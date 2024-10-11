@@ -22,7 +22,7 @@ parameters:
     displayName: "DB name"
     type: string
     values:
-      - pagopa_payment_pull_servicek6
+      - gpdk6
 variables:
   ${{ if eq(parameters['ENVIRONMENT'], 'dev') }}:
     poolImage: 'pagopa-dev-loadtest-linux'
