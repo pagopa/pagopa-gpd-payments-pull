@@ -14,6 +14,10 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
     private static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
                     "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true ";
+    private static final String GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE =
+            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
+                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true " +
+                    "AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
 
     /**
      * Recovers a reactive stream of payment positions, using the debtor taxCode, and optionally the dueDate for which at least one
@@ -31,9 +35,7 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
         if (dueDate == null) {
             return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode).page(page, limit).list();
         }
-        return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE.concat(" AND " +
-                                "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
-                        taxCode, dueDate.atStartOfDay())
+        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay())
                 .page(page, limit).list();
     }
 }
