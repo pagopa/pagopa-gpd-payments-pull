@@ -2,6 +2,7 @@ package it.gov.pagopa.gpd.payments.pull.service.impl;
 
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.unchecked.Unchecked;
+import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.mapper.PaymentNoticeMapper;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
@@ -45,7 +46,7 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
                         throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, throwable);
                     }));
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage() + "taxCode " + taxCode + "duedate " + dueDate, e);
+            throw new AppErrorException(e, dueDate, taxCode);
         }
     }
 
