@@ -32,22 +32,17 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
 
     @Override
     public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
-
-        try {
-            return paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
-                    .onFailure().invoke(Unchecked.consumer(throwable -> {
-                        throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, throwable);
-                    }))
-                    .onItem().transform(paymentPositions -> paymentPositions.stream()
-                            .filter(item -> keepAca || !item.getIupd().contains("ACA"))
-                            .map(PaymentNoticeMapper::manNotice)
-                            .toList())
-                    .onFailure().invoke(Unchecked.consumer(throwable -> {
-                        throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, throwable);
-                    }));
-        } catch (Exception e) {
-            throw new AppErrorException(e, dueDate, taxCode);
-        }
+        return paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
+                .onFailure().invoke(Unchecked.consumer(throwable -> {
+                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, throwable);
+                }))
+                .onItem().transform(paymentPositions -> paymentPositions.stream()
+                        .filter(item -> keepAca || !item.getIupd().contains("ACA"))
+                        .map(PaymentNoticeMapper::manNotice)
+                        .toList())
+                .onFailure().invoke(Unchecked.consumer(throwable -> {
+                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, throwable);
+                }));
     }
 
     private PaymentNoticeException buildPaymentNoticeException(AppErrorCodeEnum errorCodeEnum, Throwable throwable) {
