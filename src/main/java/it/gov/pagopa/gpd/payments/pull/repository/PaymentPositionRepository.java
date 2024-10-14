@@ -33,9 +33,8 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
             String taxCode, LocalDate dueDate, Integer limit, Integer page
     ) {
         if (dueDate == null) {
-            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode).page(page, limit).list();
+            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode).list();
         }
-        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay())
-                .page(page, limit).list();
+        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay()).list();
     }
 }
