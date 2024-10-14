@@ -1,7 +1,6 @@
 package it.gov.pagopa.gpd.payments.pull.exception.mapper;
 
 import io.smallrye.mutiny.CompositeException;
-import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
@@ -86,18 +85,10 @@ public class ExceptionMapper {
 
     @ServerExceptionMapper
     public Response mapGenericException(Exception exception) {
-        ErrorResponse errorResponse;
-        if (exception instanceof AppErrorException appE) {
-            errorResponse = buildErrorResponse(
-                    Response.Status.INTERNAL_SERVER_ERROR,
-                    AppErrorCodeEnum.PPL_900,
-                    "Unexpected Error, taxCode: " + appE.getTaxCode() + " dueDate: " + appE.getDueDate() + " ");
-        } else {
-            errorResponse = buildErrorResponse(
-                    Response.Status.INTERNAL_SERVER_ERROR,
-                    AppErrorCodeEnum.PPL_900,
-                    "Unexpected Error" + exception.getMessage());
-        }
+        ErrorResponse errorResponse = buildErrorResponse(
+                Response.Status.INTERNAL_SERVER_ERROR,
+                AppErrorCodeEnum.PPL_900,
+                "Unexpected Error" + exception.getMessage());
         logger.error(exception.getMessage(), exception);
         MDC.put(FAULT_CODE, "500");
         MDC.put(FAULT_DETAIL, getDetails(exception));

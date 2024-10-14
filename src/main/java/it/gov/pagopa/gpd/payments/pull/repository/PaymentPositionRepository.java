@@ -3,7 +3,6 @@ package it.gov.pagopa.gpd.payments.pull.repository;
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
-import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;
@@ -27,17 +26,14 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
      * @return
      */
     public Uni<List<PaymentPosition>> findPaymentPositionsByTaxCodeAndDueDate(
-            String taxCode, LocalDate dueDate, Integer limit, Integer page) {
-        try {
-            return (dueDate == null ?
-                    find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode) :
-                    find(GET_VALID_POSITIONS_BY_TAXCODE_BASE.concat(" AND " +
-                                    "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
-                            taxCode, dueDate.atStartOfDay()))
-                    .page(page, limit).list();
-        } catch (Exception e) {
-            throw new AppErrorException(e, dueDate, taxCode);
+            String taxCode, LocalDate dueDate, Integer limit, Integer page
+    ) {
+        if (dueDate == null) {
+            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode).page(page, limit).list();
         }
+        return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE.concat(" AND " +
+                                "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
+                        taxCode, dueDate.atStartOfDay())
+                .page(page, limit).list();
     }
-
 }
