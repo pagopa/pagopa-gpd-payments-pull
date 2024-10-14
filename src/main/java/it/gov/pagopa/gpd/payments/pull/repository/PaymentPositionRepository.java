@@ -1,6 +1,7 @@
 package it.gov.pagopa.gpd.payments.pull.repository;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
 import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 
@@ -13,7 +14,7 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
 
     private static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
-                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true ";
+                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true";
     private static final String GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
                     "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true " +
@@ -33,8 +34,12 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
             String taxCode, LocalDate dueDate, Integer limit, Integer page
     ) {
         if (dueDate == null) {
-            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode).list();
+            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode)
+                    .page(Page.of(page, limit))
+                    .list();
         }
-        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay()).list();
+        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay())
+                .page(Page.of(page, limit))
+                .list();
     }
 }
