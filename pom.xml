@@ -7,7 +7,7 @@
     <groupId>it.gov.pagopa</groupId>
     <artifactId>pagopa-gpd-payments-pull</artifactId>
     <name>PagoPA GPD Payments Pull Services</name>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 
     <properties>
         <jacoco.version>0.8.7</jacoco.version>
