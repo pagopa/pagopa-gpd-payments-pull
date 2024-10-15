@@ -20,8 +20,8 @@ import org.eclipse.microprofile.openapi.annotations.servers.ServerVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
 
 
 @OpenAPIDefinition(

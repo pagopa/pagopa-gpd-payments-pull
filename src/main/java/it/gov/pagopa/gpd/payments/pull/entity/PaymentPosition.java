@@ -7,8 +7,8 @@ import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
 import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

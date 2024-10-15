@@ -1,6 +1,6 @@
 package it.gov.pagopa.gpd.payments.pull.config;
 
-import javax.interceptor.InterceptorBinding;
+import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.*;
 
 @InterceptorBinding

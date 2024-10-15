@@ -1,21 +1,20 @@
 package it.gov.pagopa.gpd.payments.pull.service.impl;
 
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.smallrye.mutiny.CompositeException;
 import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentOption;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
-import it.gov.pagopa.gpd.payments.pull.entity.Transfer;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
 import it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,14 +23,17 @@ import java.util.List;
 
 import static it.gov.pagopa.gpd.payments.pull.Constants.DUE_DATE;
 import static it.gov.pagopa.gpd.payments.pull.Constants.FISCAL_CODE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @QuarkusTest
 class PaymentNoticesServiceImplTest {
 
-    @InjectMock(convertScopes = true)
+    @InjectMock
     PaymentPositionRepository paymentPositionRepository;
 
     @Inject

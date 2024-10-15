@@ -82,7 +82,8 @@
               "format": "int32",
               "default": 50,
               "maximum": 100,
-              "minimum": 1,
+              "minimum": 0,
+              "exclusiveMinimum": true,
               "type": "integer"
             }
           },
@@ -215,32 +216,29 @@
             "type": "string"
           },
           "dueDate": {
+            "description": "Is the date by which (TO) the Payment option is payable.",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "Is the date by which (TO) the Payment option is payable."
               }
             ]
           },
           "retentionDate": {
+            "description": "Not currently used in any logic. The purpose of this date will be to give the possibility to specify a time period after the dueDate within which a payment option, even if expired, will still be payable.",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "Not currently used in any logic. The purpose of this date will be to give the possibility to specify a time period after the dueDate within which a payment option, even if expired, will still be payable."
               }
             ]
           },
           "insertedDate": {
+            "description": "date of insertion of the OP",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "date of insertion of the OP"
               }
             ]
           },
@@ -250,22 +248,20 @@
             "type": "integer"
           },
           "status": {
+            "description": "Status of the OP",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/PaymentOptionStatus"
-              },
-              {
-                "description": "Status of the OP"
               }
             ]
           },
           "lastUpdatedDate": {
+            "description": "OP update date",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "OP update date"
               }
             ]
           }
@@ -323,52 +319,47 @@
             "type": "string"
           },
           "insertedDate": {
+            "description": "Date of entry of the Debt Position",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "Date of entry of the Debt Position"
               }
             ]
           },
           "publishDate": {
+            "description": "Date of publication of the Debt Position. In the case of Positions created by ACA it corresponds to the insertion date.",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "Date of publication of the Debt Position. In the case of Positions created by ACA it corresponds to the insertion date."
               }
             ]
           },
           "validityDate": {
+            "description": "Start date of validity of the Debt Position. if set to null it goes directly to valid when publishing",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "Start date of validity of the Debt Position. if set to null it goes directly to valid when publishing"
               }
             ]
           },
           "status": {
+            "description": "State of the Debt Position. Will be\nVALID\n or\nPARTIALLY_PAID",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/PaymentNoticeStatus"
-              },
-              {
-                "description": "State of the Debt Position. Will be\nVALID\n or\nPARTIALLY_PAID"
               }
             ]
           },
           "lastUpdateDate": {
+            "description": "Date of update of the Debt Position",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDate"
-              },
-              {
-                "description": "Date of update of the Debt Position"
               }
             ]
           },
@@ -411,12 +402,11 @@
             "type": "integer"
           },
           "dueDate": {
+            "description": "Is the date by which the Payment option is payable.",
+            "type": "string",
             "allOf": [
               {
                 "$ref": "#/components/schemas/LocalDateTime"
-              },
-              {
-                "description": "Is the date by which the Payment option is payable."
               }
             ]
           },

@@ -4,8 +4,8 @@ import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
+import jakarta.enterprise.context.ApplicationScoped;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;
 import java.util.List;
 

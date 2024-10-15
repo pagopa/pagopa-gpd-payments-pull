@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentOptionStatus;
 import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
