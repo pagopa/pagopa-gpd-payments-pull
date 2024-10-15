@@ -34,7 +34,7 @@ module "apim_gpd_payments_pull_api_v1" {
   name                  = "pagopa-${var.env_short}-gpd-payments-pull-api"
   api_management_name   = local.apim.name
   resource_group_name   = local.apim.rg
-  product_ids = concat([local.apim.gpd_payments_pull_product_id], [local.apim.gpd_payments_pull_product_test_id])
+  product_ids = concat([local.apim.gpd_payments_pull_product_id],var.env_short == "-" ? [] : [local.apim.gpd_payments_pull_product_test_id]) # ppull-prod-test
   subscription_required = local.apim_gpd_payments_pull.subscription_required
   version_set_id        = azurerm_api_management_api_version_set.api_gpd_payments_pull_api.id
   api_version           = "v1"
