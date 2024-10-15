@@ -2,14 +2,22 @@ package it.gov.pagopa.gpd.payments.pull.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Table(
@@ -22,7 +30,7 @@ import java.io.Serializable;
 @Entity
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@transferMetadataId")
-public class TransferMetadata extends PanacheEntityBase implements Serializable {
+public class TransferMetadata implements Serializable {
 
     /**
      * generated serialVersionUID

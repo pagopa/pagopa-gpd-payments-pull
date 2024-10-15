@@ -2,7 +2,6 @@ package it.gov.pagopa.gpd.payments.pull.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +29,7 @@ import java.io.Serializable;
 @Entity
 @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@paymentOptionMetadataId")
-public class PaymentOptionMetadata extends PanacheEntityBase implements Serializable {
+public class PaymentOptionMetadata implements Serializable {
 
 
     /**

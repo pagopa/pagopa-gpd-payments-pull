@@ -3,16 +3,27 @@ package it.gov.pagopa.gpd.payments.pull.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
-import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Parameters;
-import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
-import lombok.*;
-
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,11 +40,7 @@ import java.util.List;
 @Entity
 @Table(name = "payment_position", schema = "apd")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@paymentPositionId")
-@NamedQueries({
-        @NamedQuery(name = "PaymentPosition.getValidByTaxCode", query = "from PaymentPosition AS ppos Where ppos.fiscalCode = :fiscalCode AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true"),
-        @NamedQuery(name = "PaymentPosition.getValidByTaxCodeAndDueDate", query = "from PaymentPosition AS ppos Where ppos.fiscalCode = :fiscalCode AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= :dueDate)"),
-})
-public class PaymentPosition extends PanacheEntityBase implements Serializable {
+public class PaymentPosition implements Serializable {
 
 
     /**
@@ -122,20 +129,4 @@ public class PaymentPosition extends PanacheEntityBase implements Serializable {
     @OneToMany(targetEntity = PaymentOption.class, fetch = FetchType.EAGER,
             mappedBy = "paymentPosition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentOption> paymentOption = new ArrayList<>();
-
-    public static Uni<List<PaymentPosition>> findValidByTaxCode(
-            String taxCode, Integer limit, Integer page
-    ) {
-        return find("#PaymentPosition.getValidByTaxCode", Parameters.with("fiscalCode", taxCode))
-                .page(Page.of(page, limit))
-                .list();
-    }
-
-    public static Uni<List<PaymentPosition>> findValidByTaxCodeAndDueDate(
-            String taxCode, LocalDate dueDate, Integer limit, Integer page
-    ) {
-        return find("#PaymentPosition.getValidByTaxCodeAndDueDate", Parameters.with("fiscalCode", taxCode).and("dueDate", dueDate))
-                .page(Page.of(page, limit))
-                .list();
-    }
 }
