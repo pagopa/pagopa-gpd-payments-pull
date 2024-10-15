@@ -2,6 +2,7 @@ package it.gov.pagopa.gpd.payments.pull.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import it.gov.pagopa.gpd.payments.pull.models.enums.PaymentOptionStatus;
 import lombok.*;
 
@@ -23,7 +24,7 @@ import java.util.List;
         schema = "apd"
 )
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@paymentOptionId")
-public class PaymentOption implements Serializable {
+public class PaymentOption extends PanacheEntityBase implements Serializable {
 
     /**
      * generated serialVersionUID

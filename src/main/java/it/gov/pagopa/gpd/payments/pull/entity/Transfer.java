@@ -2,6 +2,7 @@ package it.gov.pagopa.gpd.payments.pull.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import it.gov.pagopa.gpd.payments.pull.models.enums.TransferStatus;
 import lombok.*;
 
@@ -21,7 +22,7 @@ import java.util.List;
 @Entity
 @Table(name = "transfer", schema = "apd")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@transferId")
-public class Transfer implements Serializable {
+public class Transfer extends PanacheEntityBase implements Serializable {
 
     /**
      * generated serialVersionUID
