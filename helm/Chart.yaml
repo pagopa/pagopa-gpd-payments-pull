@@ -2,8 +2,8 @@ apiVersion: v2
 name: gpd-payments-pull
 description: Microservice pagopa-gpd-payments-pull
 type: application
-version: 0.33.0
-appVersion: 1.1.3-9-config-performance-test
+version: 0.34.0
+appVersion: 1.1.3-10-config-performance-test
 dependencies:
   - name: microservice-chart
     version: 2.8.0
