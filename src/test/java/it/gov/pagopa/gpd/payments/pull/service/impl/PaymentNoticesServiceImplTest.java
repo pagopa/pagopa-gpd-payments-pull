@@ -47,8 +47,7 @@ class PaymentNoticesServiceImplTest {
                 .when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
                         (FISCAL_CODE, DUE_DATE, 50, 0);
         List<PaymentNotice> response = assertDoesNotThrow(() ->
-                        paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0))
-                .await().indefinitely();
+                        paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
         assertNotNull(response);
         assertEquals(2, response.size());
         assertEquals("iupd", response.get(0).getIupd());
@@ -67,8 +66,7 @@ class PaymentNoticesServiceImplTest {
                         (FISCAL_CODE, DUE_DATE, 50, 0);
         CompositeException paymentNoticeException =
                 assertThrows(CompositeException.class, () ->
-                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0)
-                .await().indefinitely());
+                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
         List<Throwable> causes = paymentNoticeException.getCauses();
         assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size()-1)).getErrorCode());
     }
@@ -82,8 +80,7 @@ class PaymentNoticesServiceImplTest {
                         (FISCAL_CODE, DUE_DATE, 50, 0);
         CompositeException paymentNoticeException =
                 assertThrows(CompositeException.class, () ->
-                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0)
-                        .await().indefinitely());
+                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
         List<Throwable> causes = paymentNoticeException.getCauses();
         assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size()-1)).getErrorCode());
     }
