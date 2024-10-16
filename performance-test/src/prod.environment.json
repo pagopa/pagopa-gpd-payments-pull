@@ -1,0 +1,11 @@
+{
+  "environment": [
+    {
+      "env": "prod",
+      "paymentsPullServiceURIBasePath": "https://api.platform.pagopa.it/pagopa-gpd-payments-pull/v1",
+      "gpdURIBasePath": "https://api.platform.pagopa.it/gpd/api/v1",
+      "userTaxCode": "STCCST83A15L0002",
+      "organizationTaxCode": "77777777777"
+    }
+  ]
+}
