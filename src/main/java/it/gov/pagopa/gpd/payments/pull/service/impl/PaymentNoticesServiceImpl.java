@@ -1,7 +1,5 @@
 package it.gov.pagopa.gpd.payments.pull.service.impl;
 
-import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.unchecked.Unchecked;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.mapper.PaymentNoticeMapper;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
@@ -25,18 +23,15 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     Boolean keepAca;
 
     @Override
-    public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
-        return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
-                .onFailure().invoke(Unchecked.consumer(throwable -> {
-                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, throwable);
-                }))
-                .onItem().transform(paymentPositions -> paymentPositions.stream()
-                        .filter(item -> keepAca || !item.getIupd().contains("ACA"))
-                        .map(PaymentNoticeMapper::manNotice)
-                        .toList())
-                .onFailure().invoke(Unchecked.consumer(throwable -> {
-                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, throwable);
-                }));
+    public List<PaymentNotice> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
+        try {
+            return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page).parallelStream()
+                    .filter(item -> keepAca || !item.getIupd().contains("ACA"))
+                    .map(PaymentNoticeMapper::manNotice)
+                    .toList();
+        } catch (Exception e) {
+            throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, e);
+        }
     }
 
     private PaymentNoticeException buildPaymentNoticeException(AppErrorCodeEnum errorCodeEnum, Throwable throwable) {

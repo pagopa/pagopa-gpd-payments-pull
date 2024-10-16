@@ -1,8 +1,7 @@
 package it.gov.pagopa.gpd.payments.pull.repository;
 
-import io.quarkus.hibernate.reactive.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
-import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -30,7 +29,7 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
      * @param page    page number
      * @return
      */
-    public Uni<List<PaymentPosition>> findPaymentPositionsByTaxCodeAndDueDate(
+    public List<PaymentPosition> findPaymentPositionsByTaxCodeAndDueDate(
             String taxCode, LocalDate dueDate, Integer limit, Integer page
     ) {
         if (dueDate == null) {

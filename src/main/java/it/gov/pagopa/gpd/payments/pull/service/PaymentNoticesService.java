@@ -1,6 +1,5 @@
 package it.gov.pagopa.gpd.payments.pull.service;
 
-import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 
 import java.time.LocalDate;
@@ -21,6 +20,6 @@ public interface PaymentNoticesService {
      * @param page    page number
      * @return Uni stream containing a list of notices
      */
-    Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page);
+    List<PaymentNotice> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page);
 
 }
