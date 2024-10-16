@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "1.1.5-1-config-performance-test"
+    tag: "1.1.5-2-config-performance-test"
     pullPolicy: Always
   livenessProbe:
     httpGet:
