@@ -32,6 +32,5 @@ class OpenApiGenerationTest {
         Path basePath = Paths.get("openapi/");
         Files.createDirectories(basePath);
         Files.write(basePath.resolve("openapi.json"), formatted.getBytes());
-
     }
 }

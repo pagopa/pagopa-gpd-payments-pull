@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 import static it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException.getHttpStatus;
@@ -88,7 +88,7 @@ public class ExceptionMapper {
         ErrorResponse errorResponse = buildErrorResponse(
                 Response.Status.INTERNAL_SERVER_ERROR,
                 AppErrorCodeEnum.PPL_900,
-                "Unexpected Error");
+                "Unexpected Error" + exception.getMessage());
         logger.error(exception.getMessage(), exception);
         MDC.put(FAULT_CODE, "500");
         MDC.put(FAULT_DETAIL, getDetails(exception));
