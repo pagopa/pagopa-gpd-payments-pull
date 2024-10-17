@@ -126,7 +126,7 @@ public class PaymentPosition implements Serializable {
     private Integer version = 0;
 
     @Builder.Default
-    @OneToMany(targetEntity = PaymentOption.class, fetch = FetchType.EAGER,
+    @OneToMany(targetEntity = PaymentOption.class, fetch = FetchType.LAZY,
             mappedBy = "paymentPosition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentOption> paymentOption = new ArrayList<>();
 }
