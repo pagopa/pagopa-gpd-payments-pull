@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "1.1.5-3-reactive-without-pagination"
+    tag: "1.1.5-4-reactive-without-pagination"
     pullPolicy: Always
   livenessProbe:
     httpGet:
