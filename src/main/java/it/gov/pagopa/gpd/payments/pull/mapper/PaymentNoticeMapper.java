@@ -38,14 +38,14 @@ public class PaymentNoticeMapper {
                 .publishDate(paymentPosition.getPublishDate())
                 .debtorType(paymentPosition.getType().toString())
                 .build();
-        List<PaymentOption> paymentOptions = new java.util.ArrayList<>(paymentPosition.getPaymentOption().stream()
-                .filter(item -> !item.getIsPartialPayment()).map(
-                        item -> mapOptions(paymentPosition, Collections.singletonList(item))).toList());
-        if (paymentOptions.size() != paymentPosition.getPaymentOption().size()) {
-            paymentOptions.add(mapOptions(paymentPosition, paymentPosition.getPaymentOption().stream()
-                    .filter(it.gov.pagopa.gpd.payments.pull.entity.PaymentOption::getIsPartialPayment).toList()));
-        }
-        paymentNotice.setPaymentOptions(paymentOptions);
+//        List<PaymentOption> paymentOptions = new java.util.ArrayList<>(paymentPosition.getPaymentOption().stream()
+//                .filter(item -> !item.getIsPartialPayment()).map(
+//                        item -> mapOptions(paymentPosition, Collections.singletonList(item))).toList());
+//        if (paymentOptions.size() != paymentPosition.getPaymentOption().size()) {
+//            paymentOptions.add(mapOptions(paymentPosition, paymentPosition.getPaymentOption().stream()
+//                    .filter(it.gov.pagopa.gpd.payments.pull.entity.PaymentOption::getIsPartialPayment).toList()));
+//        }
+//        paymentNotice.setPaymentOptions(paymentOptions);
         return paymentNotice;
     }
 
