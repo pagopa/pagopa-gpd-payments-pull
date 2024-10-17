@@ -28,7 +28,7 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     @Override
     public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
-                .onFailure().retry().withBackOff(Duration.ofSeconds(30), Duration.ofSeconds(30)).atMost(2)
+                .onFailure().retry().withBackOff(Duration.ofSeconds(15), Duration.ofSeconds(25)).atMost(2)
                 .onItem().transform(paymentPositions -> paymentPositions.stream()
                         .filter(item -> keepAca || !item.getIupd().contains("ACA"))
                         .map(PaymentNoticeMapper::manNotice)
