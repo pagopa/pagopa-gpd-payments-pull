@@ -2,8 +2,8 @@ package it.gov.pagopa.gpd.payments.pull.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
@@ -17,8 +17,8 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static it.gov.pagopa.gpd.payments.pull.Constants.DUE_DATE;
 import static it.gov.pagopa.gpd.payments.pull.Constants.FISCAL_CODE;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -30,7 +30,7 @@ class PaymentNoticesTest {
     private static final String INVALID_DUE_DATE = "2024-04-21A";
     private static final String INVALID_FISCAL_CODE = "tooShort";
     private final ObjectMapper objectMapper = new ObjectMapper();
-    @InjectMock(convertScopes = true)
+    @InjectMock
     private PaymentNoticesService paymentNoticesService;
 
     @Test
