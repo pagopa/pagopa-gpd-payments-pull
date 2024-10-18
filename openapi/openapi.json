@@ -4,7 +4,7 @@
     "title": "pagopa-gpd-payments-pull",
     "description": "GPD Payments Pull Services",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "1.1.5-4-config-performance-test"
+    "version": "1.1.5-5-config-performance-test"
   },
   "servers": [
     {
