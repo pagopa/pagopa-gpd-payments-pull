@@ -79,7 +79,7 @@ microservice-chart:
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
     JAVA_TOOL_OPTIONS: "-javaagent:/deployments/jmx_prometheus_javaagent-0.19.0.jar=12345:/deployments/config.yaml -javaagent:/deployments/opentelemetry-javaagent.jar -javaagent:/deployments/applicationinsights-agent.jar"
-    GPD_DB_URL: "vertx-reactive:postgresql://pagopa-d-gpd-postgresql.postgres.database.azure.com:5432/apd?sslmode=require&tcpKeepAlive=true"
+    GPD_DB_URL: "jdbc:postgresql://pagopa-d-gpd-postgresql.postgres.database.azure.com:5432/apd?sslmode=require&tcpKeepAlive=true"
   envFieldRef:
   envSecret:
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
