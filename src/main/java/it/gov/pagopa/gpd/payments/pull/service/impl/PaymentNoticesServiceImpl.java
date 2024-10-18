@@ -12,7 +12,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +27,9 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     @Override
     public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
-                .onFailure().retry().withBackOff(Duration.ofSeconds(15), Duration.ofSeconds(25)).atMost(2)
+                .onFailure().invoke(Unchecked.consumer(throwable -> {
+                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, throwable);
+                }))
                 .onItem().transform(paymentPositions -> paymentPositions.stream()
                         .filter(item -> keepAca || !item.getIupd().contains("ACA"))
                         .map(PaymentNoticeMapper::manNotice)
