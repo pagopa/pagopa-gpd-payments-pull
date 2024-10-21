@@ -3,7 +3,6 @@ package it.gov.pagopa.gpd.payments.pull.service.impl;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.CompositeException;
-import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentOption;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
@@ -27,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 class PaymentNoticesServiceImplTest {
@@ -41,13 +40,14 @@ class PaymentNoticesServiceImplTest {
 
     @Test
     void getPaymentNoticesShouldReturnOK() {
-        doReturn(Uni.createFrom().item(Arrays.asList(createPaymentPosition("", false),
-                createPaymentPosition("ACA_", false),
-                createPaymentPosition("PARTIAL_", true))))
-                .when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
-                        (FISCAL_CODE, DUE_DATE, 50, 0);
+        when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
+                .thenReturn(Arrays.asList(createPaymentPosition("", false),
+                        createPaymentPosition("ACA_", false),
+                        createPaymentPosition("PARTIAL_", true)));
+
         List<PaymentNotice> response = assertDoesNotThrow(() ->
-                        paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
+                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
+
         assertNotNull(response);
         assertEquals(2, response.size());
         assertEquals("iupd", response.get(0).getIupd());
@@ -60,44 +60,45 @@ class PaymentNoticesServiceImplTest {
 
     @Test
     void getPaymentNoticesShouldReturnExceptionOnRepositoryError() {
-        doReturn(Uni.createFrom().item(() -> {
-            throw new RuntimeException();
-        })).when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
-                        (FISCAL_CODE, DUE_DATE, 50, 0);
+        when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
+                .thenThrow(RuntimeException.class);
+
         CompositeException paymentNoticeException =
                 assertThrows(CompositeException.class, () ->
-                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
+                        paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
+
         List<Throwable> causes = paymentNoticeException.getCauses();
-        assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size()-1)).getErrorCode());
+        assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size() - 1)).getErrorCode());
     }
 
     @Test
     void getPaymentNoticesShouldReturnExceptionOnMappingError() {
         PaymentPosition paymentPosition = createPaymentPosition("", true);
         paymentPosition.setPaymentOption(null);
-        doReturn(Uni.createFrom().item(Collections.singletonList(paymentPosition)))
-                .when(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate
-                        (FISCAL_CODE, DUE_DATE, 50, 0);
+        when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
+                .thenReturn(Collections.singletonList(paymentPosition));
+
         CompositeException paymentNoticeException =
                 assertThrows(CompositeException.class, () ->
-                paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
+                        paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
+
         List<Throwable> causes = paymentNoticeException.getCauses();
-        assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size()-1)).getErrorCode());
+        assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size() - 1)).getErrorCode());
     }
 
-    PaymentPosition createPaymentPosition(String prefix, Boolean isPartialPayment) {
+    private PaymentPosition createPaymentPosition(String prefix, Boolean isPartialPayment) {
         PaymentPosition paymentPosition = PaymentPosition.builder()
-                .iupd(prefix+"iupd")
+                .iupd(prefix + "iupd")
                 .status(DebtPositionStatus.VALID)
                 .type(Type.F)
                 .build();
 
         List<PaymentOption> paymentOption = new ArrayList<>(
                 List.of(new PaymentOption[]{PaymentOption.builder()
-                .amount(100)
-                .dueDate(LocalDateTime.now())
-                .isPartialPayment(isPartialPayment)
-                .build()}));
+                        .amount(100)
+                        .dueDate(LocalDateTime.now())
+                        .isPartialPayment(isPartialPayment)
+                        .build()}));
 
         if (isPartialPayment) {
             paymentOption.add(PaymentOption.builder()
@@ -111,5 +112,4 @@ class PaymentNoticesServiceImplTest {
 
         return paymentPosition;
     }
-
 }

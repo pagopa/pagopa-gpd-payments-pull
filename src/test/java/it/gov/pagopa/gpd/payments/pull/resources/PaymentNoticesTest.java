@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.smallrye.mutiny.Uni;
 import it.gov.pagopa.gpd.payments.pull.models.ErrorResponse;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
@@ -21,8 +20,8 @@ import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 class PaymentNoticesTest {
@@ -35,8 +34,8 @@ class PaymentNoticesTest {
 
     @Test
     void getPaymentNoticesOnValidTaxCodeShouldReturnData() throws JsonProcessingException {
-        doReturn(Uni.createFrom().item(Collections.singletonList(PaymentNotice.builder().build())))
-                .when(paymentNoticesService).getPaymentNotices(FISCAL_CODE, null, 50, 0);
+        when(paymentNoticesService.getPaymentNotices(FISCAL_CODE, null, 50, 0))
+                .thenReturn(Collections.singletonList(PaymentNotice.builder().build()));
         String responseString =
                 given()
                         .header("x-tax-code", FISCAL_CODE)
@@ -58,8 +57,8 @@ class PaymentNoticesTest {
 
     @Test
     void getPaymentNoticesOnValidTaxCodeAndDateShouldReturnData() throws JsonProcessingException {
-        doReturn(Uni.createFrom().item(Collections.singletonList(PaymentNotice.builder().build())))
-                .when(paymentNoticesService).getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0);
+        when(paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0))
+                .thenReturn(Collections.singletonList(PaymentNotice.builder().build()));
         String responseString =
                 given()
                         .header("x-tax-code", FISCAL_CODE)
@@ -104,9 +103,8 @@ class PaymentNoticesTest {
 
     @Test
     void getPaymentNoticesOnServiceErrorShouldReturnIntServerError() throws JsonProcessingException {
-        doReturn(Uni.createFrom().item(() -> {
-            throw new RuntimeException();
-        })).when(paymentNoticesService).getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0);
+        when(paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0))
+                .thenThrow(RuntimeException.class);
         String responseString =
                 given()
                         .header("x-tax-code", FISCAL_CODE)
@@ -150,7 +148,6 @@ class PaymentNoticesTest {
         assertNotNull(response.getTitle());
     }
 
-
     @Test
     void getPaymentNoticesOnValidTaxCodeAndInvalidDateShouldBadRequest() throws JsonProcessingException {
         String responseString =
@@ -174,5 +171,4 @@ class PaymentNoticesTest {
         assertNotNull(response.getDetail());
         assertNotNull(response.getTitle());
     }
-
 }
