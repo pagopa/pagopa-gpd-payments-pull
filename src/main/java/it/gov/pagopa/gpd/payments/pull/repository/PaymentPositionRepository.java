@@ -11,10 +11,10 @@ import java.util.List;
 @ApplicationScoped
 public class PaymentPositionRepository implements PanacheRepository<PaymentPosition> {
 
-    private static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
+    public static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
                     "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true";
-    private static final String GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE =
+    public static final String GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
                     "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true " +
                     "AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
