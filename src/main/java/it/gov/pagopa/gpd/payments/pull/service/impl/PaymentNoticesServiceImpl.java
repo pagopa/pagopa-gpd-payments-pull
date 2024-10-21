@@ -1,5 +1,6 @@
 package it.gov.pagopa.gpd.payments.pull.service.impl;
 
+import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.mapper.PaymentNoticeMapper;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
@@ -25,10 +26,25 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     @Override
     public List<PaymentNotice> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         try {
-            return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page).parallelStream()
+            return getPositions(taxCode, dueDate, limit, page).parallelStream()
                     .filter(item -> keepAca || !item.getIupd().contains("ACA"))
                     .map(PaymentNoticeMapper::manNotice)
                     .toList();
+        } catch (PaymentNoticeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, e);
+        }
+    }
+
+    private List<PaymentPosition> getPositions(
+            String taxCode,
+            LocalDate dueDate,
+            Integer limit,
+            Integer page
+    ) {
+        try {
+            return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page);
         } catch (Exception e) {
             throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, e);
         }

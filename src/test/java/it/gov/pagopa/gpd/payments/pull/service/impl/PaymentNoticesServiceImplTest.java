@@ -2,7 +2,6 @@ package it.gov.pagopa.gpd.payments.pull.service.impl;
 
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.smallrye.mutiny.CompositeException;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentOption;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
@@ -63,12 +62,10 @@ class PaymentNoticesServiceImplTest {
         when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
                 .thenThrow(RuntimeException.class);
 
-        CompositeException paymentNoticeException =
-                assertThrows(CompositeException.class, () ->
+        PaymentNoticeException e = assertThrows(PaymentNoticeException.class, () ->
                         paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
 
-        List<Throwable> causes = paymentNoticeException.getCauses();
-        assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size() - 1)).getErrorCode());
+        assertEquals(AppErrorCodeEnum.PPL_700, e.getErrorCode());
     }
 
     @Test
@@ -78,12 +75,10 @@ class PaymentNoticesServiceImplTest {
         when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
                 .thenReturn(Collections.singletonList(paymentPosition));
 
-        CompositeException paymentNoticeException =
-                assertThrows(CompositeException.class, () ->
+        PaymentNoticeException e = assertThrows(PaymentNoticeException.class, () ->
                         paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
 
-        List<Throwable> causes = paymentNoticeException.getCauses();
-        assertEquals(AppErrorCodeEnum.PPL_800, ((PaymentNoticeException) causes.get(causes.size() - 1)).getErrorCode());
+        assertEquals(AppErrorCodeEnum.PPL_800, e.getErrorCode());
     }
 
     private PaymentPosition createPaymentPosition(String prefix, Boolean isPartialPayment) {

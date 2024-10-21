@@ -82,7 +82,7 @@
               "format": "int32",
               "default": 50,
               "maximum": 100,
-              "minimum": 1,
+              "minimum": 0,
               "exclusiveMinimum": true,
               "type": "integer"
             }

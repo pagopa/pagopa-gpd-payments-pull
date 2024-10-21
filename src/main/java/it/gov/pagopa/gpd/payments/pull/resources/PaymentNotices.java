@@ -125,12 +125,10 @@ public class PaymentNotices {
             MDC.put("status", "OK");
             logger.info("Successfully API Invocation getPaymentNotices");
             return Response.ok().entity(paymentNotices).build();
+        } catch (PaymentNoticeException e) {
+            throw e;
         } catch (Exception e) {
-            if (e instanceof PaymentNoticeException ex) {
-                throw new PaymentNoticeException(ex.getErrorCode(), ex.getMessage(), ex.getCause());
-            } else {
-                throw new AppErrorException(e);
-            }
+            throw new AppErrorException(e);
         }
     }
 }
