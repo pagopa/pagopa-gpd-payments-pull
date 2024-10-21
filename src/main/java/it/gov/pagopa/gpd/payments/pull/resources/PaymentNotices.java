@@ -121,7 +121,6 @@ public class PaymentNotices {
 
         try {
             List<PaymentNotice> paymentNotices = this.paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
-            MDC.put("response", mapToJSON(paymentNotices));
             MDC.put("status", "OK");
             logger.info("Successfully API Invocation getPaymentNotices");
             return Response.ok().entity(paymentNotices).build();

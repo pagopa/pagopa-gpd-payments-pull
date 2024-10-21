@@ -44,6 +44,6 @@ export default function () {
 
 export async function teardown(data) {
     // 4. teardown code
-    // let response = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
-    // check(response, { 'Delete performance test debt position status is 200': () => response.status === 200 });
+     let response = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
+     check(response, { 'Delete performance test debt position status is 200': () => response.status === 200 });
 }
