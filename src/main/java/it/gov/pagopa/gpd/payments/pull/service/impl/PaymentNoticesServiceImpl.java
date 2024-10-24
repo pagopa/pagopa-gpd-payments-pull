@@ -1,27 +1,21 @@
 package it.gov.pagopa.gpd.payments.pull.service.impl;
 
-import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.unchecked.Unchecked;
+import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.mapper.PaymentNoticeMapper;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository;
 import it.gov.pagopa.gpd.payments.pull.service.PaymentNoticesService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @ApplicationScoped
 public class PaymentNoticesServiceImpl implements PaymentNoticesService {
-
-    Logger logger = LoggerFactory.getLogger(PaymentNoticesServiceImpl.class);
 
     @Inject
     PaymentPositionRepository paymentPositionRepository;
@@ -30,18 +24,30 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     Boolean keepAca;
 
     @Override
-    public Uni<List<PaymentNotice>> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
-        return paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page)
-                .onFailure().invoke(Unchecked.consumer(throwable -> {
-                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, throwable);
-                }))
-                .onItem().transform(paymentPositions -> paymentPositions.stream()
-                        .filter(item -> keepAca || !item.getIupd().contains("ACA"))
-                        .map(PaymentNoticeMapper::manNotice)
-                        .toList())
-                .onFailure().invoke(Unchecked.consumer(throwable -> {
-                    throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, throwable);
-                }));
+    public List<PaymentNotice> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
+        try {
+            return getPositions(taxCode, dueDate, limit, page).parallelStream()
+                    .filter(item -> keepAca || !item.getIupd().contains("ACA"))
+                    .map(PaymentNoticeMapper::manNotice)
+                    .toList();
+        } catch (PaymentNoticeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_800, e);
+        }
+    }
+
+    private List<PaymentPosition> getPositions(
+            String taxCode,
+            LocalDate dueDate,
+            Integer limit,
+            Integer page
+    ) {
+        try {
+            return this.paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(taxCode, dueDate, limit, page);
+        } catch (Exception e) {
+            throw buildPaymentNoticeException(AppErrorCodeEnum.PPL_700, e);
+        }
     }
 
     private PaymentNoticeException buildPaymentNoticeException(AppErrorCodeEnum errorCodeEnum, Throwable throwable) {

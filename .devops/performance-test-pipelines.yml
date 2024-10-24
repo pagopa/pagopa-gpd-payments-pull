@@ -32,7 +32,7 @@ variables:
     poolImage: 'pagopa-uat-loadtest-linux'
     API_SUBSCRIPTION_KEY: "$(UAT_API_SUBSCRIPTION_KEY)"
   ${{ if eq(parameters['ENVIRONMENT'], 'prod') }}:
-    poolImage: 'pagopa-prod-loadtest-linux'
+    poolImage: 'pagopa-uat-loadtest-linux'
     API_SUBSCRIPTION_KEY: "$(PROD_API_SUBSCRIPTION_KEY)"
 
 pool:
