@@ -31,6 +31,9 @@ export default function () {
 
     let responseBody = JSON.parse(response.body);
 
+    if (response.status >= 400) {
+        console.log("ERROR: ", responseBody);
+    }
     check(response, {
         'Payment Pull Service getPaymentNotices status is 200': () => response.status === 200,
         'Payment Pull Service getPaymentNotices body has list of payment notices': () =>
@@ -41,6 +44,6 @@ export default function () {
 
 export async function teardown(data) {
     // 4. teardown code
-    let response = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
-    check(response, { 'Delete performance test debt position status is 200': () => response.status === 200 });
+     let response = await deleteToGPD(`${gpdURIBasePath}/organizations/${organizationTaxCode}/debtpositions/${iupd}`);
+     check(response, { 'Delete performance test debt position status is 200': () => response.status === 200 });
 }

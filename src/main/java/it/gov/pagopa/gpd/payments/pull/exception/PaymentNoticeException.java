@@ -3,7 +3,7 @@ package it.gov.pagopa.gpd.payments.pull.exception;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import lombok.Getter;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.Objects;
 
 /**

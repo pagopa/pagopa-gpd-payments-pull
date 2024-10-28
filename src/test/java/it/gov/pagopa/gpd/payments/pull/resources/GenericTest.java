@@ -4,7 +4,7 @@ package it.gov.pagopa.gpd.payments.pull.resources;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
 
@@ -12,7 +12,7 @@ import static io.restassured.RestAssured.given;
 class GenericTest {
 
     @Test
-    public void info(){
+    void info(){
         given()
                 .when().get("/info")
                 .then()
@@ -21,7 +21,7 @@ class GenericTest {
     }
 
     @Test
-    public void home(){
+    void home(){
         given()
                 .when().get("")
                 .then()

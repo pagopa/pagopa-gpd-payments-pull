@@ -1,19 +1,23 @@
 package it.gov.pagopa.gpd.payments.pull.repository;
 
-import io.quarkus.hibernate.reactive.panache.PanacheRepository;
-import io.smallrye.mutiny.Uni;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
 import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
+import jakarta.enterprise.context.ApplicationScoped;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;
 import java.util.List;
 
 @ApplicationScoped
 public class PaymentPositionRepository implements PanacheRepository<PaymentPosition> {
 
-    private static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
+    public static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
-                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true ";
+                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true";
+    public static final String GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE =
+            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
+                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true " +
+                    "AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
 
     /**
      * Recovers a reactive stream of payment positions, using the debtor taxCode, and optionally the dueDate for which at least one
@@ -25,14 +29,16 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
      * @param page    page number
      * @return
      */
-    public Uni<List<PaymentPosition>> findPaymentPositionsByTaxCodeAndDueDate(
-            String taxCode, LocalDate dueDate, Integer limit, Integer page) {
-        return (dueDate == null ?
-                find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode) :
-                find(GET_VALID_POSITIONS_BY_TAXCODE_BASE.concat(" AND " +
-                                "EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)"),
-                        taxCode, dueDate.atStartOfDay()))
-                .page(page, limit).list();
+    public List<PaymentPosition> findPaymentPositionsByTaxCodeAndDueDate(
+            String taxCode, LocalDate dueDate, Integer limit, Integer page
+    ) {
+        if (dueDate == null) {
+            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode)
+                    .page(Page.of(page, limit))
+                    .list();
+        }
+        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay())
+                .page(Page.of(page, limit))
+                .list();
     }
-
 }

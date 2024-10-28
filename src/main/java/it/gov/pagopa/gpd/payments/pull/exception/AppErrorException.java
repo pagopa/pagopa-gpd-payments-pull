@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 public class AppErrorException extends RuntimeException {
 
-
     public AppErrorException(Throwable error) {
         super(error);
     }

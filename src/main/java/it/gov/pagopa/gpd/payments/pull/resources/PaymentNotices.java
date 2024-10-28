@@ -1,7 +1,5 @@
 package it.gov.pagopa.gpd.payments.pull.resources;
 
-import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.unchecked.Unchecked;
 import it.gov.pagopa.gpd.payments.pull.config.Logged;
 import it.gov.pagopa.gpd.payments.pull.exception.AppErrorException;
 import it.gov.pagopa.gpd.payments.pull.exception.InvalidTaxCodeHeaderException;
@@ -9,6 +7,19 @@ import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.service.PaymentNoticesService;
+import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -22,19 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +86,7 @@ public class PaymentNotices {
     @GET
     @Path("/v1")
     @Logged
-    public Uni<Response> getPaymentNotices(
+    public Response getPaymentNotices(
             @Parameter(description = "Tax code to use for retrieving notices", required = true)
             @HeaderParam("x-tax-code") String taxCode,
             @Parameter(description = "Optional date to filter paymentNotices (if provided use the format yyyy-MM-dd)")
@@ -121,19 +119,15 @@ public class PaymentNotices {
         // replace new line and tab from user input to avoid log injection
         taxCode = taxCode.replaceAll(REGEX, REPLACEMENT);
 
-        Uni<List<PaymentNotice>> paymentNoticesUni = paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
-        return paymentNoticesUni.onFailure().invoke(Unchecked.consumer(error -> {
-                    if (error instanceof PaymentNoticeException ex)
-                        throw new PaymentNoticeException(ex.getErrorCode(), ex.getMessage(), ex.getCause());
-                    else
-                        throw new AppErrorException(error);
-                }))
-                .onItem()
-                .transform(item -> {
-                    MDC.put("response", mapToJSON(item));
-                    MDC.put("status", "OK");
-                    logger.info("Successfully API Invocation getPaymentNotices");
-                    return Response.ok().entity(item).build();
-                });
+        try {
+            List<PaymentNotice> paymentNotices = this.paymentNoticeService.getPaymentNotices(taxCode, dueDate, limit, page);
+            MDC.put("status", "OK");
+            logger.info("Successfully API Invocation getPaymentNotices");
+            return Response.ok().entity(paymentNotices).build();
+        } catch (PaymentNoticeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AppErrorException(e);
+        }
     }
 }
