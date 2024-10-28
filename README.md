@@ -2,7 +2,7 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-gpd-payments-pull&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa_pagopa-gpd-payments-pull)
 
-Expose APIs that will be used by IO to retrieve the PDF receipts
+Expose APIs that will be used by IO to retrieve the list of the debtor positions.
 
 ---
 
