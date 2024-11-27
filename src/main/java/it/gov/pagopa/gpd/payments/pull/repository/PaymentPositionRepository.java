@@ -24,16 +24,10 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
     private static final String DUE_DATE_QUERY =
             BASE_QUERY + " AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
 
-    public String buildQueryBase() {
+    public String buildQuery(String query) {
         return keepAca
-                ? BASE_QUERY + " AND ppos.serviceType IN ('ACA', 'GPD')"
-                : BASE_QUERY + " AND ppos.serviceType = 'GPD'";
-    }
-
-    public String buildQueryWithDueDate() {
-        return keepAca
-                ? DUE_DATE_QUERY + " AND ppos.serviceType IN ('ACA', 'GPD')"
-                : DUE_DATE_QUERY + " AND ppos.serviceType = 'GPD'";
+                ? query + " AND ppos.serviceType IN ('ACA', 'GPD')"
+                : query + " AND ppos.serviceType = 'GPD'";
     }
     
     /**
@@ -49,7 +43,7 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
     public List<PaymentPosition> findPaymentPositionsByTaxCodeAndDueDate(
             String taxCode, LocalDate dueDate, Integer limit, Integer page) {
     	
-        String query = (dueDate == null) ? buildQueryBase() : buildQueryWithDueDate();
+        String query = (dueDate == null) ? buildQuery(BASE_QUERY) : buildQuery(DUE_DATE_QUERY);
 
         return dueDate == null
                 ? find(query, taxCode)

@@ -24,7 +24,7 @@ public class PaymentNotice implements Serializable {
 	 */
 	private static final long serialVersionUID = -5951473285697199137L;
 	
-	@Schema(description = "Unique ID of the Debt Position (for positions originating from ACA)",
+	@Schema(description = "Unique ID of the Debt Position (for positions originating from ACA the IUPD starts with ACA_)",
             required = true)
     private String iupd;
     @Schema(description = "Tax code of the person to whom the Debt Position is registered", required = true)
