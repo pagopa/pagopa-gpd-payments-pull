@@ -3,7 +3,9 @@ package it.gov.pagopa.gpd.payments.pull.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
+import it.gov.pagopa.gpd.payments.pull.models.enums.ServiceType;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,7 +28,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +108,7 @@ public class PaymentPosition implements Serializable {
     private DebtPositionStatus status;
     @NotNull
     @Column(name = "last_updated_date")
-    private LocalDate lastUpdatedDate;
+    private LocalDateTime lastUpdatedDate;
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
@@ -118,6 +119,11 @@ public class PaymentPosition implements Serializable {
     @Builder.Default
     @Column(name = "pull", columnDefinition = "boolean DEFAULT true")
     private Boolean pull = true;
+    
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "service_type")
+    private ServiceType serviceType;
 
     @Builder.Default
     @NotNull
