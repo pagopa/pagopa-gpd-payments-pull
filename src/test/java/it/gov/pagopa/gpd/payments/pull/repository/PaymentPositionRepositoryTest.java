@@ -7,6 +7,7 @@ import it.gov.pagopa.gpd.payments.pull.entity.PaymentPosition;
 import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
 import it.gov.pagopa.gpd.payments.pull.models.enums.ServiceType;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -26,9 +27,12 @@ class PaymentPositionRepositoryTest {
 
     @InjectSpy
     PaymentPositionRepository paymentPositionRepository;
+    
 
     @Test
     void findNoticesOnRepositoryWithoutDueDate() {
+    	// force keepAca to true
+    	paymentPositionRepository.keepAca = true;
         PanacheQuery panacheQuery = Mockito.mock(PanacheQuery.class);
         when(paymentPositionRepository.find(paymentPositionRepository.buildQueryBase(), FISCAL_CODE)).thenReturn(panacheQuery);
         when(panacheQuery.page(any())).thenReturn(panacheQuery);
@@ -50,6 +54,8 @@ class PaymentPositionRepositoryTest {
 
     @Test
     void findNoticesOnRepositoryWithDueDate() {
+    	// force keepAca to true
+    	paymentPositionRepository.keepAca = true;
         PanacheQuery panacheQuery = Mockito.mock(PanacheQuery.class);
         when(paymentPositionRepository.find(paymentPositionRepository.buildQueryWithDueDate(), FISCAL_CODE, DUE_DATE.atStartOfDay()))
                 .thenReturn(panacheQuery);
@@ -72,7 +78,7 @@ class PaymentPositionRepositoryTest {
     @Test
     void findNoticesOnRepositoryForKeepACAFalse() {
     	// force keepAca to false
-    	System.setProperty("app.payment_pull.keep_aca", "false");
+    	paymentPositionRepository.keepAca = false;
         PanacheQuery panacheQuery = Mockito.mock(PanacheQuery.class);
         when(paymentPositionRepository.find(paymentPositionRepository.buildQueryBase(), FISCAL_CODE)).thenReturn(panacheQuery);
         when(panacheQuery.page(any())).thenReturn(panacheQuery);

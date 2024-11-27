@@ -14,7 +14,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class PaymentPositionRepository implements PanacheRepository<PaymentPosition> {
 
     @ConfigProperty(name = "app.payment_pull.keep_aca", defaultValue = "true")
-    private boolean keepAca;
+    public boolean keepAca;
 
     // the pull flag has no business value -> for future needs
     private static final String BASE_QUERY = 
