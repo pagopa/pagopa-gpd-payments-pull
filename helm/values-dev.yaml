@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "2.0.2"
+    tag: "2.0.2-3-hikari"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -45,11 +45,11 @@ microservice-chart:
     allowPrivilegeEscalation: false
   resources:
     requests:
-      memory: "512Mi"
-      cpu: "300m"
+      memory: "256Mi"
+      cpu: "50m"
     limits:
       memory: "768Mi"
-      cpu: "600m"
+      cpu: "300m"
   autoscaling:
     enable: true
     minReplica: 1
