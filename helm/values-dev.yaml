@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "2.0.2-1-PAGOPA-2359-exclude-WISP"
+    tag: "2.0.3"
     pullPolicy: Always
   livenessProbe:
     httpGet:
