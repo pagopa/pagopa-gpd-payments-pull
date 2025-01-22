@@ -17,11 +17,11 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
     public boolean keepAca;
 
     // the pull flag has no business value -> for future needs
-    private static final String BASE_QUERY = 
+    static final String BASE_QUERY =
             "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
             "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true";
 
-    private static final String DUE_DATE_QUERY =
+    static final String DUE_DATE_QUERY =
             BASE_QUERY + " AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
 
     public String buildQuery(String query) {

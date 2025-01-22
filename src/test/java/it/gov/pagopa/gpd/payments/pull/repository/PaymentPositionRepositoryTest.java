@@ -16,6 +16,8 @@ import java.util.List;
 
 import static it.gov.pagopa.gpd.payments.pull.Constants.DUE_DATE;
 import static it.gov.pagopa.gpd.payments.pull.Constants.FISCAL_CODE;
+import static it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository.BASE_QUERY;
+import static it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository.DUE_DATE_QUERY;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,7 +36,7 @@ class PaymentPositionRepositoryTest {
     	// force keepAca to true
     	paymentPositionRepository.keepAca = true;
         PanacheQuery panacheQuery = Mockito.mock(PanacheQuery.class);
-        when(paymentPositionRepository.find(paymentPositionRepository.buildQueryBase(), FISCAL_CODE)).thenReturn(panacheQuery);
+        when(paymentPositionRepository.find(paymentPositionRepository.buildQuery(BASE_QUERY), FISCAL_CODE)).thenReturn(panacheQuery);
         when(panacheQuery.page(any())).thenReturn(panacheQuery);
         when(panacheQuery.list()).thenReturn(Collections.singletonList(
                 PaymentPosition.builder()
@@ -57,7 +59,7 @@ class PaymentPositionRepositoryTest {
     	// force keepAca to true
     	paymentPositionRepository.keepAca = true;
         PanacheQuery panacheQuery = Mockito.mock(PanacheQuery.class);
-        when(paymentPositionRepository.find(paymentPositionRepository.buildQueryWithDueDate(), FISCAL_CODE, DUE_DATE.atStartOfDay()))
+        when(paymentPositionRepository.find(paymentPositionRepository.buildQuery(DUE_DATE_QUERY), FISCAL_CODE, DUE_DATE.atStartOfDay()))
                 .thenReturn(panacheQuery);
         when(panacheQuery.page(any())).thenReturn(panacheQuery);
         when(panacheQuery.list()).thenReturn(Collections.singletonList(
@@ -80,7 +82,7 @@ class PaymentPositionRepositoryTest {
     	// force keepAca to false
     	paymentPositionRepository.keepAca = false;
         PanacheQuery panacheQuery = Mockito.mock(PanacheQuery.class);
-        when(paymentPositionRepository.find(paymentPositionRepository.buildQueryBase(), FISCAL_CODE)).thenReturn(panacheQuery);
+        when(paymentPositionRepository.find(paymentPositionRepository.buildQuery(BASE_QUERY), FISCAL_CODE)).thenReturn(panacheQuery);
         when(panacheQuery.page(any())).thenReturn(panacheQuery);
         when(panacheQuery.list()).thenReturn(Collections.singletonList(
                 PaymentPosition.builder()
