@@ -9,7 +9,6 @@ import it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository;
 import it.gov.pagopa.gpd.payments.pull.service.PaymentNoticesService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,14 +19,10 @@ public class PaymentNoticesServiceImpl implements PaymentNoticesService {
     @Inject
     PaymentPositionRepository paymentPositionRepository;
 
-    @ConfigProperty(name = "app.payment_pull.keep_aca", defaultValue = "true")
-    Boolean keepAca;
-
     @Override
     public List<PaymentNotice> getPaymentNotices(String taxCode, LocalDate dueDate, Integer limit, Integer page) {
         try {
             return getPositions(taxCode, dueDate, limit, page).parallelStream()
-                    .filter(item -> keepAca || !item.getIupd().contains("ACA"))
                     .map(PaymentNoticeMapper::manNotice)
                     .toList();
         } catch (PaymentNoticeException e) {

@@ -7,7 +7,6 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +19,12 @@ import java.util.List;
 @ToString
 public class PaymentNotice implements Serializable {
 
-    @Schema(description = "Unique ID of the Debt Position (for positions originating from ACA the IUPD starts with ACA_)",
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5951473285697199137L;
+	
+	@Schema(description = "Unique ID of the Debt Position",
             required = true)
     private String iupd;
     @Schema(description = "Tax code of the person to whom the Debt Position is registered", required = true)
@@ -53,7 +57,7 @@ public class PaymentNotice implements Serializable {
             required = true)
     private PaymentNoticeStatus status;
     @Schema(description = "Date of update of the Debt Position", required = true)
-    private LocalDate lastUpdateDate;
+    private LocalDateTime lastUpdateDate;
     @Schema(description = "Array structure containing any payment options (there always exists at least 1)",
             required = true)
     private List<PaymentOption> paymentOptions;
