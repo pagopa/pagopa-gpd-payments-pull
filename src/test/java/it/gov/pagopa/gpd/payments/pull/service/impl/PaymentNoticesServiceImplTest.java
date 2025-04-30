@@ -8,6 +8,7 @@ import it.gov.pagopa.gpd.payments.pull.exception.PaymentNoticeException;
 import it.gov.pagopa.gpd.payments.pull.models.PaymentNotice;
 import it.gov.pagopa.gpd.payments.pull.models.enums.AppErrorCodeEnum;
 import it.gov.pagopa.gpd.payments.pull.models.enums.DebtPositionStatus;
+import it.gov.pagopa.gpd.payments.pull.models.enums.ServiceType;
 import it.gov.pagopa.gpd.payments.pull.models.enums.Type;
 import it.gov.pagopa.gpd.payments.pull.repository.PaymentPositionRepository;
 import jakarta.inject.Inject;
@@ -40,19 +41,19 @@ class PaymentNoticesServiceImplTest {
     @Test
     void getPaymentNoticesShouldReturnOK() {
         when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
-                .thenReturn(Arrays.asList(createPaymentPosition("", false),
-                        createPaymentPosition("ACA_", false),
-                        createPaymentPosition("PARTIAL_", true)));
+                .thenReturn(Arrays.asList(createPaymentPosition("", false, ServiceType.GPD),
+                        createPaymentPosition("ACA_", false, ServiceType.ACA),
+                        createPaymentPosition("PARTIAL_", true, ServiceType.GPD)));
 
         List<PaymentNotice> response = assertDoesNotThrow(() ->
                 paymentNoticesService.getPaymentNotices(FISCAL_CODE, DUE_DATE, 50, 0));
 
         assertNotNull(response);
-        assertEquals(2, response.size());
+        assertEquals(3, response.size());
         assertEquals("iupd", response.get(0).getIupd());
         assertEquals(1, response.get(0).getPaymentOptions().size());
         assertEquals(1, response.get(1).getPaymentOptions().size());
-        assertEquals(2, response.get(1).getPaymentOptions().get(0).getInstallments().size());
+        assertEquals(2, response.get(2).getPaymentOptions().get(0).getInstallments().size());
         verify(paymentPositionRepository).findPaymentPositionsByTaxCodeAndDueDate(
                 FISCAL_CODE, DUE_DATE, 50, 0);
     }
@@ -70,7 +71,7 @@ class PaymentNoticesServiceImplTest {
 
     @Test
     void getPaymentNoticesShouldReturnExceptionOnMappingError() {
-        PaymentPosition paymentPosition = createPaymentPosition("", true);
+        PaymentPosition paymentPosition = createPaymentPosition("", true, ServiceType.GPD);
         paymentPosition.setPaymentOption(null);
         when(paymentPositionRepository.findPaymentPositionsByTaxCodeAndDueDate(FISCAL_CODE, DUE_DATE, 50, 0))
                 .thenReturn(Collections.singletonList(paymentPosition));
@@ -81,11 +82,12 @@ class PaymentNoticesServiceImplTest {
         assertEquals(AppErrorCodeEnum.PPL_800, e.getErrorCode());
     }
 
-    private PaymentPosition createPaymentPosition(String prefix, Boolean isPartialPayment) {
+    private PaymentPosition createPaymentPosition(String prefix, Boolean isPartialPayment, ServiceType serviceType) {
         PaymentPosition paymentPosition = PaymentPosition.builder()
                 .iupd(prefix + "iupd")
                 .status(DebtPositionStatus.VALID)
                 .type(Type.F)
+                .serviceType(serviceType)
                 .build();
 
         List<PaymentOption> paymentOption = new ArrayList<>(

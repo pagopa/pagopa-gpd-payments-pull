@@ -8,17 +8,28 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 @ApplicationScoped
 public class PaymentPositionRepository implements PanacheRepository<PaymentPosition> {
 
-    public static final String GET_VALID_POSITIONS_BY_TAXCODE_BASE =
-            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
-                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true";
-    public static final String GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE =
-            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
-                    "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true " +
-                    "AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
+    @ConfigProperty(name = "app.payment_pull.keep_aca", defaultValue = "true")
+    public boolean keepAca;
 
+    // the pull flag has no business value -> for future needs
+    static final String BASE_QUERY =
+            "from PaymentPosition AS ppos Where ppos.fiscalCode = ?1 " +
+            "AND ppos.status IN ('VALID', 'PARTIALLY_PAID') AND ppos.pull = true";
+
+    static final String DUE_DATE_QUERY =
+            BASE_QUERY + " AND EXISTS (from ppos.paymentOption AS po WHERE po.dueDate >= ?2)";
+
+    public String buildQuery(String query) {
+        return keepAca
+                ? query + " AND ppos.serviceType IN ('ACA', 'GPD')"
+                : query + " AND ppos.serviceType = 'GPD'";
+    }
+    
     /**
      * Recovers a reactive stream of payment positions, using the debtor taxCode, and optionally the dueDate for which at least one
      * Payment Option must be valid. Uses limit and page to limit result size
@@ -30,15 +41,16 @@ public class PaymentPositionRepository implements PanacheRepository<PaymentPosit
      * @return
      */
     public List<PaymentPosition> findPaymentPositionsByTaxCodeAndDueDate(
-            String taxCode, LocalDate dueDate, Integer limit, Integer page
-    ) {
-        if (dueDate == null) {
-            return find(GET_VALID_POSITIONS_BY_TAXCODE_BASE, taxCode)
-                    .page(Page.of(page, limit))
-                    .list();
-        }
-        return find(GET_VALID_POSITIONS_BY_TAXCODE_AND_DUE_DATE, taxCode, dueDate.atStartOfDay())
-                .page(Page.of(page, limit))
-                .list();
+            String taxCode, LocalDate dueDate, Integer limit, Integer page) {
+    	
+        String query = (dueDate == null) ? buildQuery(BASE_QUERY) : buildQuery(DUE_DATE_QUERY);
+
+        return dueDate == null
+                ? find(query, taxCode)
+                      .page(Page.of(page, limit))
+                      .list()
+                : find(query, taxCode, dueDate.atStartOfDay())
+                      .page(Page.of(page, limit))
+                      .list();
     }
 }

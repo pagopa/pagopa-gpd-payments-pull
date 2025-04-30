@@ -30,6 +30,11 @@ for line in $(echo $config | jq -r '. | to_entries[] | select(.key) | "\(.key)=\
     echo $line >> .env
 done
 
+# Custom code for payments-pull smoke test!
+DEV_DATABASE_URL="jdbc:postgresql://pagopa-d-weu-gpd-pgflex.postgres.database.azure.com:6432/apd?sslmode=require&prepareThreshold=0&tcpKeepAlive=true"
+# Attempt to replace the existing GPD_DB_URL value
+sed -i "s|^GPD_DB_URL=.*|DATABASE_URL=$DEV_DATABASE_URL|" .env
+
 keyvault=$(yq  -r '."microservice-chart".keyvault.name' ../helm/values-$ENV.yaml)
 secret=$(yq  -r '."microservice-chart".envSecret' ../helm/values-$ENV.yaml)
 for line in $(echo $secret | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
