@@ -2,8 +2,8 @@ apiVersion: v2
 name: gpd-payments-pull
 description: Microservice pagopa-gpd-payments-pull
 type: application
-version: 0.38.0
-appVersion: 2.0.4-PIDM-491-workload-identity
+version: 0.39.0
+appVersion: 2.0.5-PIDM-491-workload-identity
 dependencies:
   - name: microservice-chart
     version: 7.5.0
