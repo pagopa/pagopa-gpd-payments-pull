@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "gpd-payments-pull"
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
-    tag: "2.0.5-PIDM-491-workload-identity"
+    tag: "2.0.6"
     pullPolicy: Always
   livenessProbe:
     httpGet:
