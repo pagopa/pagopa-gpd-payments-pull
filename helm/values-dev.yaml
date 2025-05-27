@@ -20,9 +20,6 @@ microservice-chart:
     initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
-  deployment:
-    create: true
-    replicas: 1
   ports:
     - 8080 #http
   service:
