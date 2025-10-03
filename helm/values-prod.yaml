@@ -2,6 +2,11 @@ microservice-chart:
   namespace: "gps"
   nameOverride: ""
   fullnameOverride: "gpd-payments-pull"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   image:
     repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
     tag: "2.0.6"
@@ -20,6 +25,9 @@ microservice-chart:
     initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
+  deployment:
+    create: true
+    replicas: 3 # same as HPA minReplica
   ports:
     - 8080 #http
   service:
