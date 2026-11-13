@@ -2,8 +2,8 @@ apiVersion: v2
 name: gpd-payments-pull
 description: Microservice pagopa-gpd-payments-pull
 type: application
-version: 0.40.0
-appVersion: 2.0.6
+version: 0.41.0
+appVersion: 2.0.6-1-PIDM-2601-otel-migration
 dependencies:
   - name: microservice-chart
     version: 8.0.2
