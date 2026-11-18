@@ -84,7 +84,7 @@ microservice-chart:
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-    JAVA_TOOL_OPTIONS: "-javaagent:/deployments/jmx_prometheus_javaagent-0.19.0.jar=12345:/deployments/config.yaml -javaagent:/deployments/opentelemetry-javaagent.jar -javaagent:/deployments/applicationinsights-agent.jar"
+    JAVA_TOOL_OPTIONS: "-javaagent:/deployments/jmx_prometheus_javaagent-0.19.0.jar=12345:/deployments/config.yaml -javaagent:/deployments/opentelemetry-javaagent.jar -javaagent:/deployments/applicationinsights-agent.jar -XX:-UseBASE64Intrinsics"
     GPD_DB_URL: "jdbc:postgresql://gpd-db.u.internal.postgresql.pagopa.it:6432/apd?sslmode=require&prepareThreshold=0&tcpKeepAlive=true"
   envFieldRef:
   envSecret:
@@ -123,5 +123,5 @@ microservice-chart:
         repository: ghcr.io/pagopa/pagopa-gpd-payments-pull
         tag: "0.0.1"
         pullPolicy: Always
-      envConfig: {}
+      envConfig: {JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"}
       envSecret: {}
